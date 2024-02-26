@@ -15,7 +15,7 @@ public class Main {
                 2, 0, 1, 3,
                 0, 1, 1, 1 ]
          */
-        Iterable<Integer> result = CheckNeighboursInGrid.getSameNeighboursIds(grid, 4, 4, 7);
+        Iterable<Integer> result = CheckNeighboursInGrid.getSameNeighboursIds(grid, 4, 4, 5);
         System.out.print("Result: ");
         for (Integer value : result) {
             System.out.print(value + " ");
