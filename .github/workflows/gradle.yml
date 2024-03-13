@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-
+    name: Java CI with Gradle
     runs-on: windows-latest
     permissions:
       contents: read
