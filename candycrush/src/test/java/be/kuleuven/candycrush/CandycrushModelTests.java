@@ -86,7 +86,7 @@ public class CandycrushModelTests {
         int score = 4;
         // Check if the method behaves as expected
         assert (score == model.getScore()); // Assuming 4 elements (including the selected one) are changed
-        //Snel iets toegevoegd om ci te testen
+        //Snel iets toegevoegd om ci te testenfdbkdbvkjbfdkjnkfvbkjbjebkvbfejk
     }
 
 /*
