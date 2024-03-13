@@ -13,7 +13,7 @@ public class CandycrushApplication extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(CandycrushApplication.class.getResource("Candycrush-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 700, 700);
         stage.setTitle("Candy Crush!");//title
-        stage.setScene(scene);//t
+        stage.setScene(scene);//te
         stage.show();//test
     }
 
