@@ -12,7 +12,7 @@ public class CandycrushApplication extends Application {
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(CandycrushApplication.class.getResource("Candycrush-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 700, 700);
-        stage.setTitle("Candy Crush!");
+        stage.setTitle("Candy Crush!");//title
         stage.setScene(scene);
         stage.show();
     }
