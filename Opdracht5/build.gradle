@@ -14,14 +14,6 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter'
 }
 
-jar {
-    manifest {
-        attributes(
-                'Main-Class': 'be.kuleuven.Main'
-        )
-    }
-}
-
 test {
     useJUnitPlatform()
 }

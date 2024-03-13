@@ -45,8 +45,8 @@ public class CheckNeighboursInGrid {
         //use index to calculate which integer you should check
         //indexToCheck;
         //check for row above and below
-        int rowofindextoCheck = indexToCheck / 4;
-        int columnofindextoCheck = indexToCheck-(rowofindextoCheck * 4);
+        int rowofindextoCheck = indexToCheck / width;
+        int columnofindextoCheck = indexToCheck % width;
         //check for equal numbers in these rows (use for each loop)
         //don't go out of bounds
         //have value of index ready to check for other equals
