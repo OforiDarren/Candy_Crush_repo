@@ -14,7 +14,7 @@ public class CandycrushApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 700, 700);
         stage.setTitle("Candy Crush!");//title
         stage.setScene(scene);
-        stage.show();
+        stage.show();//test
     }
 
     public static void main(String[] args) {
