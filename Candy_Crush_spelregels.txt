@@ -17,8 +17,8 @@ Het doel van Candy Crush is om zoveel mogelijk punten te behalen door het matche
 - Het spel kan speciale snoepjes bevatten die extra krachten hebben wanneer ze worden gematcht: 
 *** Zure mat: Wanneer je een rij van minstens 3 snoepjes maakt, wordt ook de volledige onderste rij verwijderd.  
 *** Drop: Wanneer je een rij van minstens 3 snoepjes maakt, worden ook alle andere snoepjes die aan de rij grenzen verwijderd. 
-*** Zure mat: Deze snoepjes zijn dubbele punten waard. 
-*** Drop: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
+*** Zuurtjes: Deze snoepjes zijn dubbele punten waard. 
+*** Spekjes: Wanneer je een rij van minstens 3 snoepjes maakt, krijg je 3 extra zetten. 
  
 4. Puntentelling en einde spel: 
 - Elke snoepje in een verwijderde rij levert evenveel punten op als het aantal snoepjes dat verwijderd worden. 
