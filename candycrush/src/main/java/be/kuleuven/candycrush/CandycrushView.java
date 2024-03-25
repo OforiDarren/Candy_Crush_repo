@@ -1,9 +1,12 @@
 package be.kuleuven.candycrush;
 
-import be.kuleuven.candycrush.CandycrushModel;
+import  be.kuleuven.candycrush.Candy.*;
+
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 
@@ -12,6 +15,7 @@ import java.util.Iterator;
 
 public class CandycrushView extends Region {
     private CandycrushModel model;
+    private Position position;
     private int widthCandy;
     private int heigthCandy;
 
@@ -21,41 +25,68 @@ public class CandycrushView extends Region {
         heigthCandy = 50;
         update();
     }
-
+    public Node makeCandyShape(Position position, Candy candy) {
+        return switch (candy) {
+            case Candy.ZureMat zm -> createRectangle(Color.GREEN, position);
+                case Candy.Drop d -> createRectangle(Color.BLACK, position);
+            case Candy.Zuurtjes zu -> createRectangle(Color.ORANGE, position);
+            case Candy.Spekjes sp -> createRectangle(Color.PINK, position);
+            case Candy normalCandy -> createCircle(normalCandy.color(), position);
+        };
+    }
+    private Node createCircle(int color, Position position) {
+        Circle circle = new Circle();
+        int circleCenterXOffset = 25;
+        circle.setCenterX((position.colOfIndex() * widthCandy)+ circleCenterXOffset); // Voorbeeld: elke snoepje is 50 pixels breed
+        int circleCenterYOffset = 25;
+        circle.setCenterY((position.rowOfIndex() * heigthCandy)+ circleCenterYOffset); // Voorbeeld: elke snoepje is 50 pixels hoog
+        circle.setRadius(20); // Voorbeeld: straal van 20 pixels
+        switch (color) {
+            case 0:
+                circle.setFill(Color.RED);
+                break;
+            case 1:
+                circle.setFill(Color.ROSYBROWN);
+                break;
+            case 2:
+                circle.setFill(Color.BLUE);
+                break;
+            case 3:
+                circle.setFill(Color.YELLOW);
+                break;
+            default:
+                throw new IllegalArgumentException("Ongeldige kleur voor Normaal Snoepje: " + color);
+        }
+        return circle;
+    }
+    private Node createRectangle(Color color, Position position) {
+        Rectangle rectangle = new Rectangle();
+        rectangle.setX((position.colOfIndex()) * widthCandy); // Voorbeeld: elke snoepje is 50 pixels breed
+        rectangle.setY((position.rowOfIndex()) * heigthCandy); // Voorbeeld: elke snoepje is 50 pixels hoog
+        rectangle.setWidth(widthCandy); // Voorbeeld: breedte van 40 pixels
+        rectangle.setHeight(heigthCandy); // Voorbeeld: hoogte van 40 pixels
+        rectangle.setFill(color);
+        return rectangle;
+    }
     public void update(){
         getChildren().clear();
-        int i = 0;
-        int height = 0;
-        Iterator<Integer> iter = model.getSpeelbord().iterator();
-        while(iter.hasNext())
-        {
-            int candy = iter.next();
-            Rectangle rectangle = new Rectangle(i * widthCandy, height * heigthCandy, widthCandy,heigthCandy);
-            rectangle.setFill(Color.TRANSPARENT);
-            rectangle.setStroke(Color.BLACK);
-            Text text = new Text("" + candy);
-            text.setX(rectangle.getX() + (rectangle.getWidth() - text.getBoundsInLocal().getWidth()) / 2);
-            text.setY(rectangle.getY() + (rectangle.getHeight() + text.getBoundsInLocal().getHeight()) / 2);
-            getChildren().addAll(rectangle,text);
-
-            if (i == model.getWidth() - 1) {
-                i = 0;
-                height++;
-            } else {
-                i++;
-            }
+        Iterator<Candy> iter = model.getSpeelbord().iterator();
+        for (int i = 0; i < model.getBoardsize().rows()*model.getBoardsize().columns(); i++){
+            Candy candy = iter.next();
+            getChildren().addAll(makeCandyShape(Position.fromIndex(i, model.getBoardsize()), candy));
         }
+            //Text text = new Text("" + candy);
+            //text.setX(candy.getX() + (rectangle.getWidth() - text.getBoundsInLocal().getWidth()) / 2);
+            //text.setY(rectangle.getY() + (rectangle.getHeight() + text.getBoundsInLocal().getHeight()) / 2);
+            //getChildren().addAll(rectangle,text);
     }
 
-    public int getIndexOfClicked(MouseEvent me){
-        int index = -1;
+    public Position getIndexOfClicked(MouseEvent me){
         int row = (int) me.getY()/heigthCandy;
         int column = (int) me.getX()/widthCandy;
+        model.setPosition(row, column);
         System.out.println(me.getX()+" - "+me.getY()+" - "+row+" - "+column);
-        if (row < model.getWidth() && column < model.getHeight()){
-            index = model.getIndexFromRowColumn(row,column);
-            System.out.println(index);
-        }
-        return index;
+        System.out.println(model.getPosition().toIndex());
+        return model.getPosition();
     }
 }

@@ -1,23 +1,45 @@
 package be.kuleuven.candycrush.Candy;
 
-public interface Candy permits normalCandy, zureMat, drop, zuurtjes, chocolade{
+import java.util.Objects;
+import java.util.Random;
+
+public sealed interface Candy permits Candy.NormalCandy, Candy.Spekjes, Candy.Drop, Candy.ZureMat, Candy.Zuurtjes {
+    int color();
+
     record NormalCandy(int color) implements Candy {
         // Implementatie van NormalCandy
     }
 
-    record zureMat() implements Candy {
-        // Implementatie van SpecialCandy1
+    record ZureMat() implements Candy {
+        @Override
+        public int color() {
+            return 0;
+        }
+        // Implementatie van ZureMat
     }
 
-    record drop() implements Candy {
-        // Implementatie van SpecialCandy2
+    record Drop() implements Candy {
+        @Override
+        public int color() {
+            return 0;
+        }
+        // Implementatie van Drop
     }
 
-    record zuurtjes() implements Candy {
-        // Implementatie van SpecialCandy3
+    record Zuurtjes() implements Candy {
+        @Override
+        public int color() {
+            return 0;
+        }
+        // Implementatie van Zuurtjes
     }
 
-    record chocolade() implements Candy {
-        // Implementatie van SpecialCandy4
+    record Spekjes() implements Candy {
+        @Override
+        public int color() {
+            return 0;
+        }
+        // Implementatie van Spekjes
     }
+
 }

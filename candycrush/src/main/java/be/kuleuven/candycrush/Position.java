@@ -14,11 +14,13 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
         return (rowOfIndex * boardsize.columns()) + colOfIndex;
         //0 1 2 3
         //4 5 6 7
+        //8 9 10 11//27
+        //12 13 14 15
     }
     static Position fromIndex(int index, Boardsize boardsize){
         int totalPositions = boardsize.columns() * boardsize.rows();
 
-        if(index < 0 || index > totalPositions){
+        if(index < 0 || index >= (totalPositions)){
             //throw exception if index not possible
             throw new IllegalArgumentException("Index doesn't fit in boardsize!");
         }else{
@@ -26,9 +28,7 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
             //4 5 6 7
             int rowOfIndex = index / boardsize.columns();
             int colOfIndex = index % boardsize.columns();
-
             return new Position(rowOfIndex, colOfIndex, boardsize);
-
         }
 
     }
@@ -52,6 +52,11 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
         for (int i = rowbegin; i <= rowend; i++){
             for (int j = colbegin; j <= colend; j++){
                 positionArrayList.add(new Position(i,j,boardsize));
+//                if(i == rowOfIndex && j ==  colOfIndex){
+//
+//                }else{
+//                    positionArrayList.add(new Position(i,j,boardsize));
+//                }
             }
         }
 
@@ -60,9 +65,23 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
     }
     @Override
     public String toString() {
-        return "Position: (r: " + rowOfIndex + ", c" + colOfIndex + ")";
+        return "Position: (r: " + rowOfIndex + ", c: " + colOfIndex + ")";
     }
     boolean isLastColumn(){//is positie laatste in een rij
-        return ((colOfIndex + 1) % boardsize.columns()) == 0;
+        return ((colOfIndex+1) % boardsize.columns()) == 0;
+    }
+    @Override
+    public boolean equals(Object object){
+        if(this == object){
+            return true;
+        }
+        if(object == null || getClass()!= object.getClass()){
+            return false;
+        }
+        Position other = (Position) object;
+        return this.boardsize == other.boardsize &&
+                this.rowOfIndex == other.rowOfIndex &&
+                this.colOfIndex == other.colOfIndex
+                ;
     }
 }

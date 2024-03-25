@@ -3,18 +3,17 @@ package be.kuleuven.candycrush;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import be.kuleuven.CheckNeighboursInGrid;
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class CandycrushController {
-
+    @FXML
+    public javafx.scene.control.Label loginLabel;
     @FXML
     private ResourceBundle resources;
 
@@ -34,7 +33,7 @@ public class CandycrushController {
     private AnchorPane speelbord;
 
     @FXML
-    private TextField playerNameTextinput;
+    private TextField playerNameTextInput;
     @FXML
     private Label showPlayerNameLabel;
     private CandycrushModel model;
@@ -48,7 +47,7 @@ public class CandycrushController {
         assert startButton != null : "fx:id=\"btn\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert paneel != null : "fx:id=\"paneel\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert speelbord != null : "fx:id=\"speelbord\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
-        assert playerNameTextinput != null : "fx:id=\"playerNameTextinput\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
+        assert playerNameTextInput != null : "fx:id=\"playerNameTextinput\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
 
 
 
@@ -59,8 +58,8 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-            int candyIndex = view.getIndexOfClicked(me);
-            model.candyWithIndexSelected(candyIndex);
+            //int candyIndex = view.getIndexOfClicked(me);
+            model.candyWithIndexSelected(view.getIndexOfClicked(me));
             update();
     }
 
@@ -80,16 +79,18 @@ public class CandycrushController {
 //            speelbord.getChildren().add(view);
 //            loginButton.setDisable(true);
 //        }
-
-        model = new CandycrushModel(playerNameTextinput.getText(), 0, 5, 7);
+        Boardsize boardsize = new Boardsize(8,8);
+        if (playerNameTextInput == null){
+            playerNameTextInput = new TextField("No name");
+        }
+        playerName = playerNameTextInput.getText();
+        model = new CandycrushModel(playerName, 0, boardsize);
         view = new CandycrushView(model);
         speelbord.getChildren().add(view);
         view.setOnMouseClicked(this::onCandyClicked);
-
-        playerName = playerNameTextinput.getText();
         showPlayerNameLabel.setText(playerName +": "+ model.getScore());
-        playerNameTextinput.clear();
-        playerNameTextinput.setDisable(true);
+        playerNameTextInput.clear();
+        playerNameTextInput.setDisable(true);
         startButton.setDisable(true);
     }
     public void resetGameWithSamePlayer(){
