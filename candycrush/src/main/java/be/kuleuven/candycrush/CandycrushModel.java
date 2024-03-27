@@ -24,9 +24,7 @@ public class CandycrushModel {
         this.boardsize = boardsize;
         speelbord = new ArrayList<>();
         for (int i = 0; i < this.boardsize.columns()*this.boardsize.rows(); i++){
-            Random random = new Random();
-            int randomGetal = random.nextInt(5);
-            speelbord.add(generateRandomCandy(randomGetal));
+            speelbord.add(selectRandomCandy(rngNumber()));
         }
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
@@ -44,9 +42,7 @@ public class CandycrushModel {
     public void nieuwSpeelbord(){
         wisSpeelBord();
         for (int i = 0; i < this.boardsize.columns()*this.boardsize.rows(); i++){
-            Random random = new Random();
-            int randomGetal = random.nextInt(5);
-            speelbord.add(generateRandomCandy(randomGetal));
+            speelbord.add(selectRandomCandy(rngNumber()));
         }
     }
     public String getSpeler() {
@@ -65,10 +61,8 @@ public class CandycrushModel {
     public void candyWithIndexSelected(Position posIndex) {
         List<Position> positionsOfSameCandy = (List<Position>) getSameNeighbourPositions(posIndex);
             for (Position element : positionsOfSameCandy) {
-                Random random = new Random();
-                int randomGetal = random.nextInt(5);
-                speelbord.set(element.toIndex(), generateRandomCandy(randomGetal));
-                score++;
+                speelbord.set(element.toIndex(), selectRandomCandy(rngNumber()));
+                increaseScore();
             }
     }
     Iterable<Position> getSameNeighbourPositions(Position position){
@@ -82,18 +76,23 @@ public class CandycrushModel {
         }
         return result;
     }
-    public Candy generateRandomCandy(int randomNumber) {
+    public Candy selectRandomCandy(int randomNumber) {
         Random random = new Random();
         return switch (randomNumber) {
-            case 0 -> new Candy.NormalCandy(random.nextInt(4)); // Generate NormalCandy with a random color
-            case 1 -> new Candy.ZureMat();
-            case 2 -> new Candy.Drop();
-            case 3 -> new Candy.Zuurtjes();
-            case 4 -> new Candy.Spekjes();
-            default -> throw new IllegalStateException("Unexpected value: " + randomNumber);
+            case 0 -> new Candy.ZureMat();
+            case 1 -> new Candy.Drop();
+            case 2 -> new Candy.Zuurtjes();
+            case 3 -> new Candy.Spekjes();
+            default -> new Candy.NormalCandy(random.nextInt(4)); // Generate NormalCandy with a random color
         };
     }
-
+    private int rngNumber(){//create random number from 0 to 7
+        Random random = new Random();
+        return random.nextInt(30);//0-7
+    }
+    private void increaseScore(){
+        score++;
+    }
 }
 
 

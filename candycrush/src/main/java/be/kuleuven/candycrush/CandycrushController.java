@@ -80,8 +80,8 @@ public class CandycrushController {
 //            loginButton.setDisable(true);
 //        }
         Boardsize boardsize = new Boardsize(8,8);
-        if (playerNameTextInput == null){
-            playerNameTextInput = new TextField("No name");
+        if (playerNameTextInput.getText().isEmpty()){
+            playerNameTextInput.setText("No name");
         }
         playerName = playerNameTextInput.getText();
         model = new CandycrushModel(playerName, 0, boardsize);
