@@ -75,10 +75,6 @@ public class CandycrushView extends Region {
             Candy candy = iter.next();
             getChildren().addAll(makeCandyShape(Position.fromIndex(i, model.getBoardsize()), candy));
         }
-            //Text text = new Text("" + candy);
-            //text.setX(candy.getX() + (rectangle.getWidth() - text.getBoundsInLocal().getWidth()) / 2);
-            //text.setY(rectangle.getY() + (rectangle.getHeight() + text.getBoundsInLocal().getHeight()) / 2);
-            //getChildren().addAll(rectangle,text);
     }
 
     public Position getIndexOfClicked(MouseEvent me){
