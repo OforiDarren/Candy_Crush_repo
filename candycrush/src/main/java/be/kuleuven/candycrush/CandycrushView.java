@@ -12,6 +12,7 @@ import javafx.scene.text.Text;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 public class CandycrushView extends Region {
     private CandycrushModel model;
@@ -71,10 +72,16 @@ public class CandycrushView extends Region {
     public void update(){
         getChildren().clear();
         Iterator<Candy> iter = model.getSpeelbord().iterator();
-        for (int i = 0; i < model.getBoardsize().rows()*model.getBoardsize().columns(); i++){
-            Candy candy = iter.next();
-            getChildren().addAll(makeCandyShape(Position.fromIndex(i, model.getBoardsize()), candy));
-        }
+        for (int i = 0;iter.hasNext() && i < model.getBoardsize().rows()*model.getBoardsize().columns(); i++){
+            Candy candyInBoard = iter.next();
+            if(candyInBoard != null){
+                List<Position> positionList = (List<Position>) model.getBoardPositionsOfElement(candyInBoard);
+                for(Position p : positionList){
+                    getChildren().addAll(makeCandyShape(p, candyInBoard));
+                }
+            }
+            //zet hier get positions of elements functie van Board
+        } //fix this #error here!
     }
 
     public Position getIndexOfClicked(MouseEvent me){

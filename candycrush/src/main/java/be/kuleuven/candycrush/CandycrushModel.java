@@ -9,6 +9,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 import be.kuleuven.CheckNeighboursInGrid;
+import javafx.geometry.Pos;
 
 public class CandycrushModel {
     private Board<Candy> board;
@@ -24,7 +25,7 @@ public class CandycrushModel {
         this.speler = speler;
         this.score = score;
         this.boardsize = boardsize;
-        board = new Board<Candy>(new ArrayList<Candy>(), this.boardsize);
+        board = new Board<Candy>(this.boardsize);
         board.fill(cellCreator);
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
@@ -49,7 +50,7 @@ public class CandycrushModel {
         score = 0;
     }
     public Iterable<Candy> getSpeelbord() {
-        return board.copyTo(new Board<Candy>(new ArrayList<Candy>(), this.boardsize));
+        return board.copyTo(new Board<Candy>(this.boardsize));
     }
     public void candyWithIndexSelected(Position posIndex) {
         List<Position> positionsOfSameCandy = (List<Position>) getSameNeighbourPositions(posIndex);
@@ -85,6 +86,9 @@ public class CandycrushModel {
     }
     private void increaseScore(){
         score++;
+    }
+    public Iterable<Position> getBoardPositionsOfElement(Candy candy){
+        return board.getPositionsOfElement(candy);
     }
 }
 

@@ -79,7 +79,7 @@ public class CandycrushController {
 //            speelbord.getChildren().add(view);
 //            loginButton.setDisable(true);
 //        }
-        Boardsize boardsize = new Boardsize(8,8);
+        Boardsize boardsize = new Boardsize(5,5);
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
         }
