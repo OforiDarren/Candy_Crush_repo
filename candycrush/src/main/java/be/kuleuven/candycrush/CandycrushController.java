@@ -1,5 +1,6 @@
 package be.kuleuven.candycrush;
 
+import be.kuleuven.candycrush.Candy.Candy;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,17 +10,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Random;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 public class CandycrushController {
+    private Random random = new Random();
+    Thread thread1, thread2;
+    static final int maxCandies = 30;
     @FXML
     public javafx.scene.control.Label loginLabel;
     @FXML
     private ResourceBundle resources;
-
     @FXML
     private URL location;
-
     @FXML
     private Label Label;
 
@@ -48,9 +53,6 @@ public class CandycrushController {
         assert paneel != null : "fx:id=\"paneel\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert speelbord != null : "fx:id=\"speelbord\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert playerNameTextInput != null : "fx:id=\"playerNameTextinput\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
-
-
-
     }
     public void update(){
         view.update();
@@ -62,23 +64,19 @@ public class CandycrushController {
             model.candyWithIndexSelected(view.getIndexOfClicked(me));
             update();
     }
-
+    Function<Position, Candy> cellCreator = position -> {
+        // Create a new cell object using the provided position
+        return CandycrushModel.selectRandomCandy(random.nextInt(maxCandies));
+    };
     public void onClickedStartaction(ActionEvent actionEvent) {
-//        if(playerNameTextinput.getText().isEmpty()){
-//            // Show an alert indicating that the input is empty
-//            Alert alert = new Alert(Alert.AlertType.WARNING);
-//            alert.setTitle("Input Error");
-//            alert.setHeaderText("Player Name is Empty");
-//            alert.setContentText("Please enter a player name.");
-//            alert.showAndWait();
-//        }else {
-//            showPlayerNameLabel.setText(playerNameTextinput.getText() + ": " + model.getScore());
-//            playerNameTextinput.clear();
-//            playerNameTextinput.setDisable(true);
-//            model.nieuwSpeelbord();
-//            speelbord.getChildren().add(view);
-//            loginButton.setDisable(true);
-//        }
+        // Thread test on seperate board
+        Board<Candy> threadsCandyBoard = new Board<>(new Boardsize(2,2));
+        threadsCandyBoard.fill(cellCreator);
+        thread1 = new Thread(new CandyPlacer(threadsCandyBoard));
+        thread2 = new Thread(new CandyPlacer(threadsCandyBoard));
+        thread1.start();
+        thread2.start();
+        // Thread test on seperate board
         Boardsize boardsize = new Boardsize(5,5);
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
@@ -103,6 +101,8 @@ public class CandycrushController {
         showPlayerNameLabel.setText(playerName +": "+ model.getScore());
     }
     public void onQuitButton(ActionEvent actionEvent) {
+        thread1.interrupt();
+        thread2.interrupt();
         Platform.exit();
     }
 }

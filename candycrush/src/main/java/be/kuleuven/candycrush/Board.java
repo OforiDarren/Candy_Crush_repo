@@ -9,19 +9,22 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class Board<T> {
-    private Map<Position,T> map;
-    private Map<T, List<Position>> reverseMap;
-   private Boardsize  boardsize;
+    private volatile Map<Position,T>  map;
+    private volatile Map<T, List<Position>> reverseMap;
+   private volatile Boardsize  boardsize;
     public Board(Boardsize boardsize){
         this.boardsize = boardsize;
-        map = new HashMap<>(boardsize.columns()* boardsize.rows()*2);//map for your cells content
-        reverseMap = new HashMap<>(boardsize.columns()* boardsize.rows()*2);
+        map = new HashMap<>(boardsize.columns()* boardsize.rows());//map for your cells content
+        reverseMap = new HashMap<>(boardsize.columns()* boardsize.rows());
     }
-    public T getCellAt(Position position){//om de cel op een gegeven positie van het bord op te vragen.
+    public Boardsize getBoardsize(){
+        return boardsize;
+    }
+    public synchronized T getCellAt(Position position){//om de cel op een gegeven positie van het bord op te vragen.
         return this.map.get(position);
         //return typeList.get(position.toIndex());
     }
-    public void replaceCellAt(Position position, T newCell) {
+    public synchronized void replaceCellAt(Position position, T newCell) {
         T oldCellContent = map.get(position);
         if (oldCellContent != null) {
             map.put(position, newCell);
@@ -35,7 +38,7 @@ public class Board<T> {
             reverseMap.computeIfAbsent(newCell, k -> new ArrayList<>()).add(position);
         }
     }
-    public void fill(Function<Position, T> cellCreator){//om het hele bord te vullen. De fill-functie heeft als parameter een Function-object (cellCreator) die, gegeven een Positie-object, een nieuw cel-object teruggeeft.
+    public synchronized void fill(Function<Position, T> cellCreator){//om het hele bord te vullen. De fill-functie heeft als parameter een Function-object (cellCreator) die, gegeven een Positie-object, een nieuw cel-object teruggeeft.
         //typeList.clear();
         map.clear();
         reverseMap.clear();
@@ -44,10 +47,9 @@ public class Board<T> {
             Position positionIndex = Position.fromIndex(i,this.boardsize);
             map.put(positionIndex, cellContent);
             reverseMap.computeIfAbsent(cellContent, k -> new ArrayList<>()).add(positionIndex);
-            //typeList.add(cellContent);
         }
     }
-    public Iterable<T> copyTo(Board<T> otherBoard){//die alle cellen van het huidige bord kopieert naar het meegegeven bord. Als het meegegeven bord niet dezelfde afmetingen heeft, gooi je een exception.
+    public synchronized Iterable<T> copyTo(Board<T> otherBoard){//die alle cellen van het huidige bord kopieert naar het meegegeven bord. Als het meegegeven bord niet dezelfde afmetingen heeft, gooi je een exception.
         //gooi exception als het lukt
         if(!Objects.equals(boardsize.columns(), otherBoard.boardsize.columns()) && !Objects.equals(boardsize.rows(), otherBoard.boardsize.rows())){
             throw new IllegalArgumentException("De boardsizes komen niet overeen.\r\nFunction -> copyTo");
@@ -57,7 +59,7 @@ public class Board<T> {
         }
     }
     // Methode om alle posities van een element (cel) op te halen
-    public List<Position> getPositionsOfElement(T element) {
+    public synchronized List<Position> getPositionsOfElement(T element) {
         return reverseMap.getOrDefault(element, Collections.emptyList());
     }
 }

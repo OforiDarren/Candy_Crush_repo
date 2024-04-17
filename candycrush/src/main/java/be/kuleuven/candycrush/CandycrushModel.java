@@ -70,7 +70,7 @@ public class CandycrushModel {
         }
         return result;
     }
-    private Candy selectRandomCandy(int randomNumber) {
+    public static Candy selectRandomCandy(int randomNumber) {
         Random random = new Random();
         return switch (randomNumber) {
             case 0 -> new Candy.ZureMat();
