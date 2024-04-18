@@ -3,11 +3,12 @@ package be.kuleuven.candycrush;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
     public Position{
-        if(boardsize.columns() < colOfIndex || boardsize.rows() < rowOfIndex || colOfIndex < 0 || rowOfIndex < 0){
-            throw new IllegalArgumentException("Index is out of bounds!");
+        if(boardsize.columns()-1 < colOfIndex || boardsize.rows()-1 < rowOfIndex || colOfIndex < 0 || rowOfIndex < 0){
+            throw new IllegalArgumentException("Position is out of bounds!");
         }
     }
     int toIndex(){
@@ -69,6 +70,49 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
     }
     boolean isLastColumn(){//is positie laatste in een rij
         return ((colOfIndex+1) % boardsize.columns()) == 0;
+    }
+    /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 10, 3,
+              0, 1, 1, 1
+              ]
+         */
+    public Stream<Position> walkLeft(){
+        return Stream.iterate(this,
+                position -> new Position(this.rowOfIndex,
+                        this.colOfIndex-1,this.boardsize))
+                .limit(boardsize().columns());
+    }
+    public Stream<Position> walkRight(){
+        return Stream.iterate(this,
+                position -> new Position(this.rowOfIndex,
+                        this.colOfIndex+1,this.boardsize))
+                .limit(boardsize().columns());
+    }
+    public Stream<Position> walkUp(){
+        return Stream.iterate(this,
+                position -> new Position(this.rowOfIndex-1, this.colOfIndex,this.boardsize))
+                .limit(boardsize().rows());
+    }
+    public Stream<Position> walkDown(){
+        /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 10, 3,
+              0, 1, 1, 1
+              ]
+         */
+        long num = boardsize().rows() - this.rowOfIndex;//total amount of rows minus the first position
+        final int[] indexRow = {this.rowOfIndex};
+        return Stream.iterate(this,
+                position -> {
+                        indexRow[0]++;
+                        return new Position(indexRow[0], this.colOfIndex, this.boardsize);
+                })
+                .limit(num);
     }
     @Override
     public boolean equals(Object object){

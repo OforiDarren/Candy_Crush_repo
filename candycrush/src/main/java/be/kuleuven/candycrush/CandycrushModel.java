@@ -1,12 +1,12 @@
 package be.kuleuven.candycrush;
 import be.kuleuven.candycrush.Candy.Candy;
+import be.kuleuven.candycrush.Candy.NormalCandy;
 import be.kuleuven.candycrush.Position;
 import be.kuleuven.candycrush.Boardsize;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import be.kuleuven.CheckNeighboursInGrid;
 import javafx.geometry.Pos;
@@ -90,6 +90,34 @@ public class CandycrushModel {
     public Iterable<Position> getBoardPositionsOfElement(Candy candy){
         return board.getPositionsOfElement(candy);
     }
+//    public Set<List<Position>> findAllMatches(){
+//        //concatenate longest horizontal match and longest vertical match
+//        return
+//    }
+    private boolean firstTwoHaveCandy(Candy candy, Stream<Position> streamPositions){
+        //
+        // Get the first Two positions in the stream
+        // Filter them based on same candy
+        // Add them to a resulting array
+        Position[] result = streamPositions
+                                        .limit(2)
+                        .filter(position -> board.getCellAt(position).equals(candy))
+                                        .toArray(Position[]::new);
+        // Check how many candies are added to the list
+        return result.length == 2;
+    }
+//    private Stream<Position> horizontalStartingPositions(){
+//
+//    }
+//    private Stream<Position> verticalStartingPositions(){
+//
+//    }
+//    private List<Position> longestMatchToRight(Position position){
+//
+//    }
+//    List<Position> longestMatchDown(Position position){
+//
+//    }
 }
 
 

@@ -1,6 +1,7 @@
 package be.kuleuven.candycrush;
 
 import be.kuleuven.candycrush.Candy.Candy;
+import be.kuleuven.candycrush.MultiThreadingCandies.MultithreadingClient;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -64,19 +65,13 @@ public class CandycrushController {
             model.candyWithIndexSelected(view.getIndexOfClicked(me));
             update();
     }
-    Function<Position, Candy> cellCreator = position -> {
-        // Create a new cell object using the provided position
-        return CandycrushModel.selectRandomCandy(random.nextInt(maxCandies));
-    };
+
     public void onClickedStartaction(ActionEvent actionEvent) {
         // Thread test on seperate board
-        Board<Candy> threadsCandyBoard = new Board<>(new Boardsize(2,2));
-        threadsCandyBoard.fill(cellCreator);
-        thread1 = new Thread(new CandyPlacer(threadsCandyBoard));
-        thread2 = new Thread(new CandyPlacer(threadsCandyBoard));
-        thread1.start();
-        thread2.start();
+        MultithreadingClient.main(new String[]{"Threads for candies"});
         // Thread test on seperate board
+
+
         Boardsize boardsize = new Boardsize(5,5);
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
@@ -101,8 +96,7 @@ public class CandycrushController {
         showPlayerNameLabel.setText(playerName +": "+ model.getScore());
     }
     public void onQuitButton(ActionEvent actionEvent) {
-        thread1.interrupt();
-        thread2.interrupt();
+        MultithreadingClient.stopCandyThreads();
         Platform.exit();
     }
 }

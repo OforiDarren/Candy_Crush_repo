@@ -8,8 +8,8 @@ public record NormalCandy(int color) {
     }
     @Override
     public boolean equals(Object o) {
-        //
-        return (o != null && getClass() == o.getClass());
+
+        return o != null && getClass() == o.getClass() && ((NormalCandy) o).color == this.color;
     }
 
 }

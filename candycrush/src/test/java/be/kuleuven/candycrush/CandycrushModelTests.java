@@ -180,5 +180,17 @@ public class CandycrushModelTests {
         }
         assert (result.equals("Default"));
     }
+        @Test
+        public void Kijk_Of_Equals_method_werkt()
+        {
+        Candy candy1 = new Candy.NormalCandy(1);
+        Candy candy2 = new Candy.NormalCandy(1);
+        Candy candy3 = new Candy.Spekjes();
+
+        // Test equals method
+        System.out.println("candy1.equals(candy2): " + candy1.equals(candy2)); // Should print true
+        System.out.println("candy1.equals(candy3): " + candy1.equals(candy3)); // Should print false
+        assert (result.equals("Default"));
+        }
 */
 }

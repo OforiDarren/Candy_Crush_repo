@@ -43,8 +43,8 @@ public class Board<T> {
         map.clear();
         reverseMap.clear();
         for (int i = 0; i < this.boardsize.columns()*this.boardsize.rows(); i++){
-            T cellContent = cellCreator.apply(Position.fromIndex(i,this.boardsize));
             Position positionIndex = Position.fromIndex(i,this.boardsize);
+            T cellContent = cellCreator.apply(positionIndex);
             map.put(positionIndex, cellContent);
             reverseMap.computeIfAbsent(cellContent, k -> new ArrayList<>()).add(positionIndex);
         }

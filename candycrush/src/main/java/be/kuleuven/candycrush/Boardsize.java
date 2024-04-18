@@ -1,16 +1,17 @@
 package be.kuleuven.candycrush;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
 public record Boardsize(Integer rows, Integer columns) {
     public Boardsize{
         if(columns == null || rows == null || rows <= 0 || columns <= 0){
-            throw new IllegalArgumentException("Rijen en/of kolommen zijn nul of minder. Argumenten zijn de default waarden 7 en 7.");
+            throw new IllegalArgumentException("Rijen en/of kolommen zijn nul of minder. Het spel kan niet starten");
         }
 
     }
-    Iterable<Position> positions(){
+    Collection<Position> positions(){
         //0 1 2 3
         //4 5 6 7
         ArrayList<Position> positionArrayList = new ArrayList<>();
