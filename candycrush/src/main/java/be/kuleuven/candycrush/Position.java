@@ -66,7 +66,7 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
     }
     @Override
     public String toString() {
-        return "Position: (r: " + rowOfIndex + ", c: " + colOfIndex + ")";
+        return "Position: (r: " + (rowOfIndex) + ", c: " + (colOfIndex) + ")";
     }
     boolean isLastColumn(){//is positie laatste in een rij
         return ((colOfIndex+1) % boardsize.columns()) == 0;
@@ -80,24 +80,60 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
               ]
          */
     public Stream<Position> walkLeft(){
+        /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 2, 3,
+              0, 1, 1, 1
+              ]
+         */
+        long num = this.colOfIndex+1;//because row 0 is still a valid row and limit(0) doesn't work
+        final int[] indexCol = {this.colOfIndex};
         return Stream.iterate(this,
-                position -> new Position(this.rowOfIndex,
-                        this.colOfIndex-1,this.boardsize))
-                .limit(boardsize().columns());
+                position -> {
+                        indexCol[0]--;
+                        return new Position(this.rowOfIndex,indexCol[0],this.boardsize);})
+                .limit(num);
     }
     public Stream<Position> walkRight(){
+        /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 10, 3,
+              0, 1, 1, 1
+              ]
+         */
+        long num = this.boardsize.columns()- this.colOfIndex;//because row 0 is still a valid row and limit(0) doesn't work
+        final int[] indexCol = {this.colOfIndex};
         return Stream.iterate(this,
-                position -> new Position(this.rowOfIndex,
-                        this.colOfIndex+1,this.boardsize))
-                .limit(boardsize().columns());
+                position -> {
+                    indexCol[0]++;
+                    return new Position(this.rowOfIndex,indexCol[0],this.boardsize);
+                })
+                .limit(num);
     }
     public Stream<Position> walkUp(){
+        /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 10, 3,
+              0, 1, 1, 1
+              ]
+         */
+        long num = this.rowOfIndex+1;//because row 0 is still a valid row and limit(0) doesn't work
+        final int[] indexRow = {this.rowOfIndex};
         return Stream.iterate(this,
-                position -> new Position(this.rowOfIndex-1, this.colOfIndex,this.boardsize))
-                .limit(boardsize().rows());
+                position -> {
+                        indexRow[0]--;
+                return new Position(indexRow[0], this.colOfIndex,this.boardsize);
+                })
+                .limit(num);
     }
     public Stream<Position> walkDown(){
-        /*
+    /*
               [
               0, 0, 1, 0,
               1, 1, 0, 2,

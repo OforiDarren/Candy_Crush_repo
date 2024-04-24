@@ -1,5 +1,7 @@
 package be.kuleuven.candycrush;
 
+import be.kuleuven.candycrush.Candy.Candy;
+import be.kuleuven.candycrush.Candy.NormalCandy;
 import javafx.geometry.Pos;
 import org.junit.jupiter.api.Test;
 
@@ -190,7 +192,60 @@ public class CandycrushModelTests {
         // Test equals method
         System.out.println("candy1.equals(candy2): " + candy1.equals(candy2)); // Should print true
         System.out.println("candy1.equals(candy3): " + candy1.equals(candy3)); // Should print false
-        assert (result.equals("Default"));
+        assert (candy1.equals(candy2));
+        assert (!candy1.equals(candy3));
+        }
+
+        @Test
+        public void Kijk_Of_findAllMatches_werkt() {
+            Boardsize boardsize = new Boardsize(5, 5);
+            Board<Candy> candyBoard = new Board<Candy>(boardsize);
+
+            candyBoard.replaceCellAt(new Position(0, 0, boardsize), new Candy.NormalCandy(0));
+            candyBoard.replaceCellAt(new Position(1, 0, boardsize), new Candy.NormalCandy(1));
+            candyBoard.replaceCellAt(new Position(2, 0, boardsize), new Candy.NormalCandy(2));
+            candyBoard.replaceCellAt(new Position(3, 0, boardsize), new Candy.NormalCandy(3));
+            candyBoard.replaceCellAt(new Position(4, 0, boardsize), new Candy.NormalCandy(4));
+
+            candyBoard.replaceCellAt(new Position(0, 1, boardsize), new Candy.NormalCandy(1));
+            candyBoard.replaceCellAt(new Position(1, 1, boardsize), new Candy.NormalCandy(2));
+            candyBoard.replaceCellAt(new Position(2, 1, boardsize), new Candy.NormalCandy(3));
+            candyBoard.replaceCellAt(new Position(3, 1, boardsize), new Candy.NormalCandy(4));
+            candyBoard.replaceCellAt(new Position(4, 1, boardsize), new Candy.NormalCandy(5));
+
+            candyBoard.replaceCellAt(new Position(0, 2, boardsize), new Candy.NormalCandy(0));
+            candyBoard.replaceCellAt(new Position(1, 2, boardsize), new Candy.NormalCandy(1));
+            candyBoard.replaceCellAt(new Position(2, 2, boardsize), new Candy.NormalCandy(2));
+            candyBoard.replaceCellAt(new Position(3, 2, boardsize), new Candy.NormalCandy(3));
+            candyBoard.replaceCellAt(new Position(4, 2, boardsize), new Candy.NormalCandy(4));
+
+            candyBoard.replaceCellAt(new Position(0, 3, boardsize), new Candy.NormalCandy(5));
+            candyBoard.replaceCellAt(new Position(1, 3, boardsize), new Candy.NormalCandy(6));
+            candyBoard.replaceCellAt(new Position(2, 3, boardsize), new Candy.NormalCandy(7));
+            candyBoard.replaceCellAt(new Position(3, 3, boardsize), new Candy.NormalCandy(8));
+            candyBoard.replaceCellAt(new Position(4, 3, boardsize), new Candy.NormalCandy(9));
+
+            candyBoard.replaceCellAt(new Position(0, 4, boardsize), new Candy.NormalCandy(0));
+            candyBoard.replaceCellAt(new Position(1, 4, boardsize), new Candy.NormalCandy(1));
+            candyBoard.replaceCellAt(new Position(2, 4, boardsize), new Candy.NormalCandy(2));
+            candyBoard.replaceCellAt(new Position(3, 4, boardsize), new Candy.NormalCandy(3));
+            candyBoard.replaceCellAt(new Position(4, 4, boardsize), new Candy.NormalCandy(4));
+
+            //CandycrushModel model = new CandycrushModel("speler",0,boardsize);
+
+
+
+            //System.out.println(model.findAllMatches());
         }
 */
+        @Test
+        public void Check_walkright_pos(){
+            Position position = new Position(2,2, new Boardsize(5,5));
+            position.walkRight().forEach(System.out::println);
+
+        }
+
+
+
+
 }

@@ -26,7 +26,7 @@ public class Board<T> {
     }
     public synchronized void replaceCellAt(Position position, T newCell) {
         T oldCellContent = map.get(position);
-        if (oldCellContent != null) {
+        if(newCell != null) {
             map.put(position, newCell);
             List<Position> positions = reverseMap.get(oldCellContent);
             if (positions != null) {

@@ -6,12 +6,21 @@ import be.kuleuven.candycrush.Boardsize;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import be.kuleuven.CheckNeighboursInGrid;
 import javafx.geometry.Pos;
 
 public class CandycrushModel {
+    /*
+              [
+              0, 0, 1, 0,
+              1, 1, 0, 2,
+              2, 0, 2, 3,
+              0, 1, 1, 1
+              ]
+         */
     private Board<Candy> board;
     private String speler;
     private int score;
@@ -25,8 +34,11 @@ public class CandycrushModel {
         this.speler = speler;
         this.score = score;
         this.boardsize = boardsize;
-        board = new Board<Candy>(this.boardsize);
+        board = new Board<>(this.boardsize);
         board.fill(cellCreator);
+        //horizontalStartingPositions().forEach(System.out::println);
+        //verticalStartingPositions().forEach(System.out::println);
+        findAllMatches();
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
         this.position = new Position(rowOfIndex,columnOfIndex,boardsize);
@@ -39,6 +51,9 @@ public class CandycrushModel {
     }
     public void nieuwSpeelbord(){
         board.fill(cellCreator);
+        //horizontalStartingPositions().forEach(System.out::println);
+        //verticalStartingPositions().forEach(System.out::println);
+        findAllMatches();
     }
     public String getSpeler() {
         return speler;
@@ -90,34 +105,79 @@ public class CandycrushModel {
     public Iterable<Position> getBoardPositionsOfElement(Candy candy){
         return board.getPositionsOfElement(candy);
     }
-//    public Set<List<Position>> findAllMatches(){
-//        //concatenate longest horizontal match and longest vertical match
-//        return
-//    }
+
+    public Set<List<Position>> findAllMatches(){
+        //concatenate the longest horizontal match and longest vertical match
+        // Collect horizontal longest matches into a Set<List<Position>>
+        System.out.print("FIND ALL MATCHES\n\r");
+        Set<List<Position>> positionSetList = new HashSet<>();
+
+        positionSetList.addAll(
+                horizontalStartingPositions()
+                        .map(this::longestMatchToRight)
+                        .filter(element -> element.size() >= 3)
+                        .collect(Collectors.toSet())
+        );
+
+// Collect vertical longest matches into a Set<List<Position>>
+        positionSetList.addAll(
+                verticalStartingPositions()
+                        .map(this::longestMatchDown)
+                        .filter(element -> element.size() >= 3)
+                        .collect(Collectors.toSet())
+        );
+
+        positionSetList.stream()
+                .flatMap(List::stream)
+                .forEach(System.out::println);
+        return positionSetList;
+    }
+
+
     private boolean firstTwoHaveCandy(Candy candy, Stream<Position> streamPositions){
-        //
         // Get the first Two positions in the stream
         // Filter them based on same candy
         // Add them to a resulting array
         Position[] result = streamPositions
                                         .limit(2)
-                        .filter(position -> board.getCellAt(position).equals(candy))
+                                        .filter(position -> board.getCellAt(position).equals(candy))
                                         .toArray(Position[]::new);
         // Check how many candies are added to the list
+        // To make sure both positions were correct
+        // Or else give false
         return result.length == 2;
     }
-//    private Stream<Position> horizontalStartingPositions(){
-//
-//    }
-//    private Stream<Position> verticalStartingPositions(){
-//
-//    }
-//    private List<Position> longestMatchToRight(Position position){
-//
-//    }
-//    List<Position> longestMatchDown(Position position){
-//
-//    }
+
+
+    public Stream<Position> horizontalStartingPositions(){
+        //System.out.print("Horizontal starting positions: \n\r");
+        Stream<Position> positionStream = boardsize.positions().stream();
+        return positionStream
+                .filter(position -> !(firstTwoHaveCandy(board.getCellAt(position), position.walkLeft())))
+                .sorted(Comparator.comparingInt(Position::rowOfIndex));
+    }
+    public Stream<Position> verticalStartingPositions(){
+        //System.out.print("Vertical starting positions: \r\n");
+        Stream<Position> positionStream = boardsize.positions().stream();
+        return positionStream
+                .filter(position -> !(firstTwoHaveCandy(board.getCellAt(position), position.walkUp())))
+                .sorted(Comparator.comparingInt(Position::rowOfIndex));
+    }
+
+    public List<Position> longestMatchToRight(Position position){
+                    return position
+                    .walkRight()
+                    .takeWhile(pos -> board.getCellAt(position).equals(board.getCellAt(pos)))
+                            .sorted(Comparator.comparingInt(Position::rowOfIndex))
+                    .toList();
+    }
+    public List<Position> longestMatchDown(Position position){
+            return position
+                    .walkDown()
+                    .takeWhile(pos -> board.getCellAt(position).equals(board.getCellAt(pos)))
+                    .sorted(Comparator.comparingInt(Position::rowOfIndex))
+                    .collect(Collectors.toList());
+    }
 }
 
 
