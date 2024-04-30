@@ -1,16 +1,11 @@
 package be.kuleuven.candycrush;
 import be.kuleuven.candycrush.Candy.Candy;
-import be.kuleuven.candycrush.Candy.NormalCandy;
-import be.kuleuven.candycrush.Position;
-import be.kuleuven.candycrush.Boardsize;
+import be.kuleuven.candycrush.BoardSize;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import be.kuleuven.CheckNeighboursInGrid;
-import javafx.geometry.Pos;
 
 public class CandycrushModel {
     /*
@@ -21,10 +16,10 @@ public class CandycrushModel {
               0, 1, 1, 1
               ]
          */
-    private Board<Candy> board;
+    private static Board<Candy> board;
     private String speler;
     private int score;
-    private Boardsize boardsize;
+    private BoardSize boardsize;
     private Position position;
     private CandycrushView view;
     private CandycrushController candycrushController;
@@ -32,13 +27,16 @@ public class CandycrushModel {
         // Create a new cell object using the provided position
         return selectRandomCandy(rngNumber());
     };
-    public CandycrushModel(String speler, int score, Boardsize boardsize) {
+    public void setCandyAt(Position position, Candy candy){
+        board.replaceCellAt(position, candy);
+    }
+    public CandycrushModel(String speler, int score, BoardSize boardsize) {
         this.speler = speler;
         this.score = score;
         this.boardsize = boardsize;
         board = new Board<>(this.boardsize);
-        board.fill(cellCreator);
-        updateBoard();
+        //board.fill(cellCreator);
+        //updateBoard();
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
         this.position = new Position(rowOfIndex,columnOfIndex,boardsize);
@@ -46,7 +44,7 @@ public class CandycrushModel {
     public Position getPosition(){
         return position;
     }
-    public Boardsize getBoardsize() {
+    public BoardSize getBoardsize() {
         return boardsize;
     }
     public void nieuwSpeelbord(){

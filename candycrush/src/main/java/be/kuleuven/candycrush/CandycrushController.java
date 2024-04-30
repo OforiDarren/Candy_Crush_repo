@@ -57,7 +57,6 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-        //model.updateBoard();
         clickCount++;
         if(clickCount == 1){
             lastMe = me;
@@ -68,19 +67,47 @@ public class CandycrushController {
            update();
         }
     }
+    public static CandycrushModel createBoardFromString(String configuration) {
+        var lines = configuration.toLowerCase().lines().toList();
+        BoardSize size = new BoardSize(lines.size(), lines.getFirst().length());
+        var model = createNewModel(size); // deze moet je zelf voorzien
+        for (int row = 0; row < lines.size(); row++) {
+            var line = lines.get(row);
+            for (int col = 0; col < line.length(); col++) {
+                model.setCandyAt(new Position(row, col, size), characterToCandy(line.charAt(col)));
+            }
+        }
+        return model;
+    }
+    public static CandycrushModel createNewModel(BoardSize boardsize) {
+        return new CandycrushModel("Darren", 0, boardsize);
+    }
+    private static Candy characterToCandy(char c) {
+        return switch(c) {
+            case 'o' -> null;
+            case '*' -> new Candy.NormalCandy(1);
+            case '#' -> new Candy.NormalCandy(2);
+            case '@' -> new Candy.NormalCandy(3);
+            default -> throw new IllegalArgumentException("Unexpected value: " + c);
+        };
+    }
+
+
 
     public void onClickedStartaction(ActionEvent actionEvent) {
         // Thread test on seperate board
         MultithreadingClient.main(new String[]{"Threads for candies"});
         // Thread test on seperate board
 
-
-        Boardsize boardsize = new Boardsize(6,6);
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
         }
         playerName = playerNameTextInput.getText();
-        model = new CandycrushModel(playerName, 0, boardsize);
+        model = createBoardFromString("""
+        @@o#
+        o*#o
+        @@**
+        *#@@""");
         view = new CandycrushView(model);
         // Give model the view, controller after recursive updates
         model.setCandyCrushController(this);

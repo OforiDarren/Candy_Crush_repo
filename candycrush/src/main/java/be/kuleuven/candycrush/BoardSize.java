@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
-public record Boardsize(Integer rows, Integer columns) {
-    public Boardsize{
+public record BoardSize(Integer rows, Integer columns) {
+    public BoardSize{
         if(columns == null || rows == null || rows <= 0 || columns <= 0){
             throw new IllegalArgumentException("Rijen en/of kolommen zijn nul of minder. Het spel kan niet starten");
         }
@@ -28,8 +28,8 @@ public record Boardsize(Integer rows, Integer columns) {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Boardsize other = (Boardsize) o;
-        return this.rows == other.rows() && this.columns == other.columns();
+        BoardSize other = (BoardSize) o;
+        return Objects.equals(this.rows, other.rows()) && Objects.equals(this.columns, other.columns());
     }
     @Override
     public int hashCode() {

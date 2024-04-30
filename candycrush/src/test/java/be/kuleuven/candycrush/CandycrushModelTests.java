@@ -5,7 +5,7 @@ import be.kuleuven.candycrush.Candy.NormalCandy;
 import javafx.geometry.Pos;
 import org.junit.jupiter.api.Test;
 
-import be.kuleuven.candycrush.Boardsize;
+import be.kuleuven.candycrush.BoardSize;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class CandycrushModelTests {
-    Boardsize boardsize = new Boardsize(7,7);
+    BoardSize boardsize = new BoardSize(7,7);
    /*
     @Test
     public void accepteert_Het_Model_Mijn_argumenten_Naam(){
@@ -240,7 +240,7 @@ public class CandycrushModelTests {
 */
         @Test
         public void Check_walkright_pos(){
-            Position position = new Position(2,2, new Boardsize(5,5));
+            Position position = new Position(2,2, new BoardSize(5,5));
             position.walkRight().forEach(System.out::println);
 
         }

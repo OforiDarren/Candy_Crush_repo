@@ -11,13 +11,13 @@ import java.util.function.Supplier;
 public class Board<T> {
     private volatile Map<Position,T>  map;
     private volatile Map<T, List<Position>> reverseMap;
-   private volatile Boardsize  boardsize;
-    public Board(Boardsize boardsize){
+   private volatile BoardSize  boardsize;
+    public Board(BoardSize boardsize){
         this.boardsize = boardsize;
         map = new HashMap<>(boardsize.columns()* boardsize.rows());//map for your cells content
         reverseMap = new HashMap<>(boardsize.columns()* boardsize.rows());
     }
-    public Boardsize getBoardsize(){
+    public BoardSize getBoardsize(){
         return boardsize;
     }
     public synchronized T getCellAt(Position position){//om de cel op een gegeven positie van het bord op te vragen.

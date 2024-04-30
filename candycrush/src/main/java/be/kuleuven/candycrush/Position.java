@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Stream;
 
-public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
+public record Position(int rowOfIndex, int colOfIndex, BoardSize boardsize) {
     public Position{
         if(boardsize.columns()-1 < colOfIndex || boardsize.rows()-1 < rowOfIndex || colOfIndex < 0 || rowOfIndex < 0){
             throw new IllegalArgumentException("Position is out of bounds!");
@@ -18,7 +18,7 @@ public record Position(int rowOfIndex, int colOfIndex, Boardsize boardsize) {
         //8 9 10 11//27
         //12 13 14 15
     }
-    static Position fromIndex(int index, Boardsize boardsize){
+    static Position fromIndex(int index, BoardSize boardsize){
         int totalPositions = boardsize.columns() * boardsize.rows();
 
         if(index < 0 || index >= (totalPositions)){
