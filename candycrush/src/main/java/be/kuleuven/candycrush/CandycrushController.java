@@ -17,9 +17,6 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 
 public class CandycrushController {
-    private Random random = new Random();
-    Thread thread1, thread2;
-    static final int maxCandies = 30;
     @FXML
     public javafx.scene.control.Label loginLabel;
     @FXML
@@ -28,7 +25,7 @@ public class CandycrushController {
     private URL location;
     @FXML
     private Label Label;
-
+    private int clickCount = 0;
     @FXML
     private Button startButton;
 
@@ -43,10 +40,9 @@ public class CandycrushController {
     @FXML
     private Label showPlayerNameLabel;
     private CandycrushModel model;
-    private CandycrushView view;
+    public CandycrushView view;
     private String playerName;
-    private int playerScore;
-    private int score;
+    MouseEvent lastMe;
     @FXML
     void initialize() {
         assert Label != null : "fx:id=\"Label\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
@@ -61,9 +57,16 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-            //int candyIndex = view.getIndexOfClicked(me);
-            model.candyWithIndexSelected(view.getIndexOfClicked(me));
-            update();
+        model.updateBoard();
+        clickCount++;
+//        if(clickCount == 1){
+//            lastMe = me;
+//        }
+//        else if(clickCount == 2){
+//           clickCount = 0;
+//           model.candyWithIndexSelected2(view.getIndexOfClicked(me), view.getIndexOfClicked(lastMe));
+//           update();
+//        }
     }
 
     public void onClickedStartaction(ActionEvent actionEvent) {
@@ -72,13 +75,15 @@ public class CandycrushController {
         // Thread test on seperate board
 
 
-        Boardsize boardsize = new Boardsize(5,5);
+        Boardsize boardsize = new Boardsize(6,6);
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
         }
         playerName = playerNameTextInput.getText();
         model = new CandycrushModel(playerName, 0, boardsize);
         view = new CandycrushView(model);
+        // Give model the view, controller after recursive updates
+        model.setCandyCrushController(this);
         speelbord.getChildren().add(view);
         view.setOnMouseClicked(this::onCandyClicked);
         showPlayerNameLabel.setText(playerName +": "+ model.getScore());

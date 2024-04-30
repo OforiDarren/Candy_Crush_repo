@@ -26,7 +26,7 @@ public class Board<T> {
     }
     public synchronized void replaceCellAt(Position position, T newCell) {
         T oldCellContent = map.get(position);
-        if(newCell != null) {
+        //if(newCell != null) {
             map.put(position, newCell);
             List<Position> positions = reverseMap.get(oldCellContent);
             if (positions != null) {
@@ -36,7 +36,7 @@ public class Board<T> {
                 }
             }
             reverseMap.computeIfAbsent(newCell, k -> new ArrayList<>()).add(position);
-        }
+        //}
     }
     public synchronized void fill(Function<Position, T> cellCreator){//om het hele bord te vullen. De fill-functie heeft als parameter een Function-object (cellCreator) die, gegeven een Positie-object, een nieuw cel-object teruggeeft.
         //typeList.clear();

@@ -26,7 +26,7 @@ public class CandycrushView extends Region {
         heigthCandy = 50;
         update();
     }
-    public Node makeCandyShape(Position position, Candy candy) {
+    private Node makeCandyShape(Position position, Candy candy) {
         return switch (candy) {
             case Candy.ZureMat zm -> createRectangle(Color.GREEN, position);
                 case Candy.Drop d -> createRectangle(Color.BLACK, position);
@@ -80,8 +80,7 @@ public class CandycrushView extends Region {
                     getChildren().addAll(makeCandyShape(p, candyInBoard));
                 }
             }
-            //zet hier get positions of elements functie van Board
-        } //fix this #error here!
+        }
     }
 
     public Position getIndexOfClicked(MouseEvent me){
