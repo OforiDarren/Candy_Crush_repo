@@ -57,16 +57,16 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-        model.updateBoard();
+        //model.updateBoard();
         clickCount++;
-//        if(clickCount == 1){
-//            lastMe = me;
-//        }
-//        else if(clickCount == 2){
-//           clickCount = 0;
-//           model.candyWithIndexSelected2(view.getIndexOfClicked(me), view.getIndexOfClicked(lastMe));
-//           update();
-//        }
+        if(clickCount == 1){
+            lastMe = me;
+        }
+        else if(clickCount == 2){
+           clickCount = 0;
+           model.candyWithIndexSelected2(view.getIndexOfClicked(me), view.getIndexOfClicked(lastMe));
+           update();
+        }
     }
 
     public void onClickedStartaction(ActionEvent actionEvent) {

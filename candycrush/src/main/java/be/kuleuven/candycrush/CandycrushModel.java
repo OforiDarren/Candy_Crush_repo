@@ -38,6 +38,7 @@ public class CandycrushModel {
         this.boardsize = boardsize;
         board = new Board<>(this.boardsize);
         board.fill(cellCreator);
+        updateBoard();
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
         this.position = new Position(rowOfIndex,columnOfIndex,boardsize);
@@ -50,6 +51,7 @@ public class CandycrushModel {
     }
     public void nieuwSpeelbord(){
         board.fill(cellCreator);
+        updateBoard();
     }
     public String getSpeler() {
         return speler;
@@ -174,12 +176,28 @@ public class CandycrushModel {
                     .collect(Collectors.toList());
     }
 
+    private boolean swapOnePosition(Position posIndex, Position posIndex2){
+        // See if the positions are one apart
+        // Check if the positions are one off horizontally
+        if (Math.abs(posIndex.colOfIndex() - posIndex2.colOfIndex()) == 1 && posIndex.rowOfIndex() == posIndex2.rowOfIndex()) {
+            return true; // Horizontal swap is possible
+        }
+
+        // Check if the positions are one off vertically
+        return Math.abs(posIndex.rowOfIndex() - posIndex2.rowOfIndex()) == 1 && posIndex.colOfIndex() == posIndex2.colOfIndex(); // Vertical swap is possible
+        // Positions are not adjacent
+    }
+
     public void candyWithIndexSelected2(Position posIndex, Position posIndex2) {
+        //If one of the two candies are zero then just return
+        if(board.getCellAt(posIndex) == null || board.getCellAt(posIndex2) == null) return;
+        if(!swapOnePosition(posIndex, posIndex2)) return;
+        // Copy the board (maybe swap doesn't lead to any combo's)
+        Board<Candy> originalBoard = board;
+        // Perform the swap on the board because you don't know if it's doable
         Candy temp = board.getCellAt(posIndex);
         board.replaceCellAt(posIndex, board.getCellAt(posIndex2));
         board.replaceCellAt(posIndex2, temp);
-        System.out.println(findAllMatches());
-        clearMatch(findAllMatches().stream().flatMap(List::stream).collect(Collectors.toList()));
     }
     public void clearMatch(List<Position> match){
         if(match.isEmpty()) return;
@@ -217,6 +235,13 @@ public class CandycrushModel {
         return false;
     }
     public void setCandyCrushController(CandycrushController controller){ this.candycrushController = controller;}
+//    private boolean matchAfterSwitch(){
+//
+//    }
+//
+//    private void maximizeScore(){
+//
+//    }
 }
 
 
