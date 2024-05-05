@@ -71,9 +71,11 @@ public class CandycrushController {
         var lines = configuration.toLowerCase().lines().toList();
         BoardSize size = new BoardSize(lines.size(), lines.getFirst().length());
         var model = createNewModel(size); // deze moet je zelf voorzien
-        for (int row = 0; row < lines.size(); row++) {
+        for (int row = 0; row < lines.size(); row++)
+        {
             var line = lines.get(row);
-            for (int col = 0; col < line.length(); col++) {
+            for (int col = 0; col < line.length(); col++)
+            {
                 model.setCandyAt(new Position(row, col, size), characterToCandy(line.charAt(col)));
             }
         }
@@ -108,6 +110,7 @@ public class CandycrushController {
         o*#o
         @@**
         *#@@""");
+        // Already get rid of the possible matches that can be found
         view = new CandycrushView(model);
         // Give model the view, controller after recursive updates
         model.setCandyCrushController(this);
