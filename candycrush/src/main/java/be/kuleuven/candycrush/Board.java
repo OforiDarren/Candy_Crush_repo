@@ -1,14 +1,7 @@
 package be.kuleuven.candycrush;
 
-import be.kuleuven.candycrush.Candy.Candy;
-import javafx.geometry.Point2D;
-import javafx.geometry.Pos;
-
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class Board<T> {
     private volatile Map<Position,T>  map;
@@ -41,7 +34,6 @@ public class Board<T> {
         //}
     }
     public synchronized void fill(Function<Position, T> cellCreator){//om het hele bord te vullen. De fill-functie heeft als parameter een Function-object (cellCreator) die, gegeven een Positie-object, een nieuw cel-object teruggeeft.
-        //typeList.clear();
         map.clear();
         reverseMap.clear();
         for (int i = 0; i < this.boardsize.columns()*this.boardsize.rows(); i++){
@@ -67,31 +59,6 @@ public class Board<T> {
             }
         }
     }
-    public synchronized Board<T> deepCopy(){
-        Board<T> newBoard = new Board<>(this.boardsize);
-
-        for (Map.Entry<Position, T> entry : map.entrySet()) {
-            Position position = entry.getKey();
-            T value = entry.getValue();
-            T newObjOfvalue =  deepCopyItem(value);
-            newBoard.map.put(new Position(position.rowOfIndex(), position.colOfIndex(), boardsize), newObjOfvalue);
-        }
-        return newBoard;
-    }
-    // Deep copy method for T objects
-    private T deepCopyItem(T item) {
-        // Assuming T has a copy constructor
-        try {
-            Constructor<?> constructor = item.getClass().getConstructor(item.getClass());
-            return (T) constructor.newInstance(item);
-        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
-                 InvocationTargetException e) {
-            // Handle exception or provide an alternative way to deep copy
-            e.printStackTrace();
-            return null;
-        }
-    }
-
     // Methode om alle posities van een element (cel) op te halen
     public synchronized List<Position> getPositionsOfElement(T element) {
         return reverseMap.getOrDefault(element, Collections.emptyList());
