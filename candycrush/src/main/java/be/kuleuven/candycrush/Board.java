@@ -4,6 +4,8 @@ import be.kuleuven.candycrush.Candy.Candy;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -49,15 +51,47 @@ public class Board<T> {
             reverseMap.computeIfAbsent(cellContent, k -> new ArrayList<>()).add(positionIndex);
         }
     }
-    public synchronized Iterable<T> copyTo(Board<T> otherBoard){//die alle cellen van het huidige bord kopieert naar het meegegeven bord. Als het meegegeven bord niet dezelfde afmetingen heeft, gooi je een exception.
-        //gooi exception als het lukt
-        if(!Objects.equals(boardsize.columns(), otherBoard.boardsize.columns()) && !Objects.equals(boardsize.rows(), otherBoard.boardsize.rows())){
+    public synchronized void copyTo(Board<T> otherBoard)
+    {   // Die alle cellen van het huidige bord kopieert naar het meegegeven bord. Als het meegegeven bord niet dezelfde afmetingen heeft, gooit het een exception.
+        // Gooi exception als het lukt
+        if(!Objects.equals(boardsize.columns(), otherBoard.boardsize.columns()) && !Objects.equals(boardsize.rows(), otherBoard.boardsize.rows()))
+        {
             throw new IllegalArgumentException("De boardsizes komen niet overeen.\r\nFunction -> copyTo");
         }
-        else {
-            return map.values();
+        else
+        {
+            for (Map.Entry<Position, T> entry : map.entrySet()) {
+                Position position = entry.getKey();
+                T value = entry.getValue();
+                otherBoard.map.put(new Position(position.rowOfIndex(), position.colOfIndex(), otherBoard.boardsize), value);
+            }
         }
     }
+    public synchronized Board<T> deepCopy(){
+        Board<T> newBoard = new Board<>(this.boardsize);
+
+        for (Map.Entry<Position, T> entry : map.entrySet()) {
+            Position position = entry.getKey();
+            T value = entry.getValue();
+            T newObjOfvalue =  deepCopyItem(value);
+            newBoard.map.put(new Position(position.rowOfIndex(), position.colOfIndex(), boardsize), newObjOfvalue);
+        }
+        return newBoard;
+    }
+    // Deep copy method for T objects
+    private T deepCopyItem(T item) {
+        // Assuming T has a copy constructor
+        try {
+            Constructor<?> constructor = item.getClass().getConstructor(item.getClass());
+            return (T) constructor.newInstance(item);
+        } catch (NoSuchMethodException | IllegalAccessException | InstantiationException |
+                 InvocationTargetException e) {
+            // Handle exception or provide an alternative way to deep copy
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     // Methode om alle posities van een element (cel) op te halen
     public synchronized List<Position> getPositionsOfElement(T element) {
         return reverseMap.getOrDefault(element, Collections.emptyList());

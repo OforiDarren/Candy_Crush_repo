@@ -13,6 +13,7 @@ import javafx.scene.text.Text;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class CandycrushView extends Region {
     private CandycrushModel model;
@@ -26,7 +27,7 @@ public class CandycrushView extends Region {
         heigthCandy = 50;
         update();
     }
-    private Node makeCandyShape(Position position, Candy candy) {
+    private Node PutCandyOnGrid(Position position, Candy candy) {
         return switch (candy) {
             case Candy.ZureMat zm -> createRectangle(Color.GREEN, position);
                 case Candy.Drop d -> createRectangle(Color.BLACK, position);
@@ -71,14 +72,16 @@ public class CandycrushView extends Region {
     }
     public void update(){
         getChildren().clear();
-        Iterator<Candy> iter = model.getSpeelbord().iterator();
-        for (int i = 0;iter.hasNext() && i < model.getBoardsize().rows()*model.getBoardsize().columns(); i++){
-            Candy candyInBoard = iter.next();
-            if(candyInBoard != null){
-                List<Position> positionList = (List<Position>) model.getBoardPositionsOfElement(candyInBoard);
-                for(Position p : positionList){
-                    getChildren().addAll(makeCandyShape(p, candyInBoard));
-                }
+        // Give me a copy of the current game board
+        Board<Candy> candyBoard = model.getSpeelbord();
+        // Iterate over every position of this board
+        for (Position pos : candyBoard.getBoardsize().positions()){
+            // Get the object of every position
+            Candy candyAtPos = candyBoard.getCellAt(pos);
+            // If it's null don't put anything in the grid
+            if(candyAtPos != null){
+                // Put the candy in the grid
+                getChildren().addAll(PutCandyOnGrid(pos, candyAtPos));
             }
         }
     }

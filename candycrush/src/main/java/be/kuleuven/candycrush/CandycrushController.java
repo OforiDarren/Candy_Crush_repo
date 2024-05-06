@@ -57,14 +57,16 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-        clickCount++;
+        model.candyWithIndexSelected2(null, null);
+        update();
+        // clickCount++;
         if(clickCount == 1){
             lastMe = me;
         }
         else if(clickCount == 2){
            clickCount = 0;
-           model.candyWithIndexSelected2(view.getIndexOfClicked(me), view.getIndexOfClicked(lastMe));
-           update();
+
+
         }
     }
     public static CandycrushModel createBoardFromString(String configuration) {
@@ -86,16 +88,13 @@ public class CandycrushController {
     }
     private static Candy characterToCandy(char c) {
         return switch(c) {
-            case 'o' -> null;
+            case 'o' -> new Candy.NormalCandy(0);
             case '*' -> new Candy.NormalCandy(1);
             case '#' -> new Candy.NormalCandy(2);
             case '@' -> new Candy.NormalCandy(3);
             default -> throw new IllegalArgumentException("Unexpected value: " + c);
         };
     }
-
-
-
     public void onClickedStartaction(ActionEvent actionEvent) {
         // Thread test on seperate board
         MultithreadingClient.main(new String[]{"Threads for candies"});
