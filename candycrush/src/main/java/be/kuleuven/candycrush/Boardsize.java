@@ -28,7 +28,7 @@ public record Boardsize(Integer rows, Integer columns) {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         Boardsize other = (Boardsize) o;
-        return this.rows == other.rows() && this.columns == other.columns();
+        return Objects.equals(this.rows, other.rows()) && Objects.equals(this.columns, other.columns());
     }
     @Override
     public int hashCode() {

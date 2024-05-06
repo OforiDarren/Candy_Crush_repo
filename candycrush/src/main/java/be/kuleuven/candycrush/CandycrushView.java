@@ -70,10 +70,15 @@ public class CandycrushView extends Region {
     }
     public void update(){
         getChildren().clear();
-        Iterator<Candy> iter = model.getSpeelbord().iterator();
-        for (int i = 0; i < model.getBoardsize().rows()*model.getBoardsize().columns(); i++){
-            Candy candy = iter.next();
-            getChildren().addAll(makeCandyShape(Position.fromIndex(i, model.getBoardsize()), candy));
+        Board<Candy> candyBoard = model.getSpeelbord();
+        for (int i = 0; i < candyBoard.getBoardsize().columns()*candyBoard.getBoardsize().rows(); i++){
+            // Get the object of every position
+            Candy candyAtPos = candyBoard.getCellAt(Position.fromIndex(i, candyBoard.getBoardsize()));
+            // If it's null don't put anything in the grid
+            if(candyAtPos != null){
+                // Put the candy in the grid
+                getChildren().addAll(makeCandyShape(Position.fromIndex(i, candyBoard.getBoardsize()), candyAtPos));
+            }
         }
     }
 

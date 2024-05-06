@@ -2,10 +2,8 @@ package be.kuleuven.candycrush;
 import be.kuleuven.candycrush.Candy.Candy;
 import be.kuleuven.candycrush.Position;
 import be.kuleuven.candycrush.Boardsize;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 import java.util.function.Function;
 
 import be.kuleuven.CheckNeighboursInGrid;
@@ -48,8 +46,10 @@ public class CandycrushModel {
     public void resetScore(){
         score = 0;
     }
-    public Iterable<Candy> getSpeelbord() {
-        return board.copyTo(new Board<Candy>(new ArrayList<Candy>(), this.boardsize));
+    public Board<Candy> getSpeelbord() {
+        Board<Candy> candyBoard = new Board<>(new ArrayList<>(Collections.nCopies(boardsize.rows()* boardsize.columns(), null)), boardsize);
+        board.copyTo(candyBoard);
+        return candyBoard;
     }
     public void candyWithIndexSelected(Position posIndex) {
         List<Position> positionsOfSameCandy = (List<Position>) getSameNeighbourPositions(posIndex);
