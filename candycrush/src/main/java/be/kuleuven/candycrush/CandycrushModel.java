@@ -15,10 +15,10 @@ public class CandycrushModel {
               0, 1, 1, 1
               ]
          */
-    private static Board<Candy> board;
-    private Board<Candy> originalBoard;
+    private static Board<Candy> board, originalBoard;
+    private List<Position> bestMovesList = new ArrayList<>();
     private String speler;
-    private int score, bestScore;
+    private int score, bestScore, iterCounter;
     private BoardSize boardsize;
     private Position position;
     private CandycrushController candycrushController;
@@ -34,7 +34,7 @@ public class CandycrushModel {
         this.score = score;
         this.boardsize = boardsize;
         board = new Board<>(this.boardsize);
-        originalBoard = new Board<>(this.boardsize);
+
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
         this.position = new Position(rowOfIndex,columnOfIndex,boardsize);
@@ -53,7 +53,7 @@ public class CandycrushModel {
         return speler;
     }
     public int getScore(){
-        return score;
+        return bestScore;
     }
     public void resetScore(){
         score = 0;
@@ -191,52 +191,110 @@ public class CandycrushModel {
         }
         return false;
     }
+    private boolean checkBoardIfNoMatches(){
+        // Check the board swap the candies and check for a comination
+        // If there is none return true
+        System.out.print("Begin: testen of board matches heeft---------------------------------\n\n");
+        List<Position> matchHoriz, matchVert;
+        for (int i = 0; i < boardsize.rows()-1; i++)
+        {
+            for (int j = 0; j < boardsize.columns(); j++)
+            {
+                Position currentPosition = new Position(i,j,boardsize);
+                Position positionBelow = new Position(i+1   ,j      , boardsize);
+                Position positionToTheRight;
+                if(currentPosition.isLastColumn()){
+                    positionToTheRight  = currentPosition;
+                }
+                else{
+                    positionToTheRight  = new Position(i    ,1+j    , boardsize);
+                }
+
+                swapOnePosition(currentPosition, positionToTheRight);
+                matchHoriz = new ArrayList<>(findAllMatches().stream().flatMap(List::stream).toList());
+                swapOnePosition(currentPosition, positionToTheRight);
+
+                swapOnePosition(currentPosition, positionBelow);
+                matchVert = new ArrayList<>(findAllMatches().stream().flatMap(List::stream).toList());
+                swapOnePosition(currentPosition, positionBelow);
+
+                if (!matchHoriz.isEmpty() || !matchVert.isEmpty()){
+                    System.out.print("Einde: board heeft matches---------------------------------\n\n");
+                    return false;
+                }
+
+            }
+        }
+        System.out.print("Einde: board heeft geen matches---------------------------------\n\n");
+        return true;
+    }
     // This function will check every swappable move in the board and provide the maximum amount of points you can get
     void findBestMove(){
+        // Base case
+        if(checkBoardIfNoMatches()) {
+            if (bestScore < score) {
+                bestScore = score;
+                System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n" +
+                        "");
+            }
+            return;
+        }
 
         // Door de clearmatches in het begin kan de speler al een score hebben
-
+        System.out.print("New iteration started: "+(++iterCounter)+"\n");
         for (int i = 0;i < boardsize.rows()-1; i++){
-            for (int j = 0; j < boardsize.columns()-1; j++)
+            for (int j = 0; j < boardsize.columns(); j++)
             {
                 // This function changes candies on the original board and gives them to a function which then swaps
                 // All the candies on that board to get the most points of that.
                 Position currentPosition = new Position(i,j,boardsize);
-                Position positionToTheRight = new Position(i    ,1+j    , boardsize);
                 Position positionBelow = new Position(i+1   ,j      , boardsize);
-                // Swapped 2 candies in board.
-                // Find out if it is a match
-                // originalBoard = board;
-                simulateSwap(currentPosition, positionToTheRight);
-                simulateSwap(currentPosition, positionBelow);
-            }
-        }
-    }
-    public void simulateSwap(Position position1, Position position2){
-        if(swapOnePosition(position1, position2)){
-            // originalBoard = board;
-            // Go over every possible swap inside a swap, save the swap that brought you the most amount of points
-            if (matchAfterSwitch())
-            {
-                // After a match in the board
-                // Find the best move again for this (temporary) board
-                // Save the bestScore if score is higher (furthest solution in the game yet)
-                if(score > bestScore) bestScore = score;
-                System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n");
-                // Find best move in the board after the swap and cleared board
-                findBestMove();
-            }
-            // Undo the swap
-            // board = originalBoard;
-            swapOnePosition(position1, position2);
+                Position positionToTheRight;
+                if(currentPosition.isLastColumn()) positionToTheRight = currentPosition;
+                else positionToTheRight = new Position(i,1+j,boardsize);
 
+                // Best moves
+                List<Position> bestMoves = new ArrayList<>();
+                // New swap
+                Board<Candy> tempBoard = new Board<>(boardsize);
+                swapOnePosition(currentPosition, positionToTheRight);
+                board.copyTo(tempBoard);
+                int tempScore = score;
+                if (matchAfterSwitch())
+                {
+                    bestMoves.add(currentPosition);bestMoves.add(positionToTheRight);
+                    findBestMove();
+                    bestMoves.remove(currentPosition);bestMoves.remove(positionToTheRight);
+                    score = tempScore;
+                    tempBoard.copyTo(board);
+                }
+                swapOnePosition(currentPosition, positionToTheRight);
+
+                // Unswap
+
+
+                board.copyTo(tempBoard);
+                // New swap
+                swapOnePosition(currentPosition, positionBelow);
+                tempScore = score;
+                if (matchAfterSwitch())
+                {
+                    bestMoves.add(currentPosition);bestMoves.add(positionBelow);
+                    findBestMove();
+                    bestMoves.remove(currentPosition);bestMoves.remove(positionBelow);
+                    score = tempScore;
+                    tempBoard.copyTo(board);
+                }
+                swapOnePosition(currentPosition, positionBelow);
+                // Unswap
+            }
         }
     }
+
     public void candyWithIndexSelected2(Position posIndex, Position posIndex2) {
         // Solve the board for the maximum amount of points
         updateBoard();
         bestScore = score;
-        board.copyTo(originalBoard);
         // Find best move with given board
         findBestMove();
         // System.out.print("Beste score mogelijk in dit spel: "+bestScore);
@@ -270,7 +328,7 @@ public class CandycrushModel {
         fallDownTo(oneRowAbove);
     }
     public boolean updateBoard(){
-        // If there is no match left then return
+        // If there is no match left then return false
         List<Position> match = new ArrayList<>(findAllMatches().stream().flatMap(List::stream).toList());
         match.sort(Comparator.comparingInt(Position::rowOfIndex));
         match.reversed();

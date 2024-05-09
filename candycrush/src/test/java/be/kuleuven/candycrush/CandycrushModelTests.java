@@ -242,7 +242,6 @@ public class CandycrushModelTests {
         public void Check_walkright_pos(){
             Position position = new Position(2,2, new BoardSize(5,5));
             position.walkRight().forEach(System.out::println);
-
         }
 
 
