@@ -28,6 +28,7 @@ public class CandycrushController {
     private int clickCount = 0;
     @FXML
     private Button startButton;
+    private Button resetButton;
 
     @FXML
     private AnchorPane paneel;
@@ -57,16 +58,13 @@ public class CandycrushController {
     }
 
     public void onCandyClicked(MouseEvent me){
-        model.candyWithIndexSelected2(null, null);
-        update();
-        // clickCount++;
+        clickCount++;
         if(clickCount == 1){
             lastMe = me;
         }
         else if(clickCount == 2){
            clickCount = 0;
-
-
+            model.candyWithIndexSelected2(view.getIndexOfClicked(lastMe), view.getIndexOfClicked(me));
         }
     }
     public static CandycrushModel createBoardFromString(String configuration) {
@@ -115,19 +113,24 @@ public class CandycrushController {
         model.setCandyCrushController(this);
         speelbord.getChildren().add(view);
         view.setOnMouseClicked(this::onCandyClicked);
-        showPlayerNameLabel.setText(playerName +": "+ model.getScore());
+        showPlayerNameLabel.setText(model.getSpeler() +": "+ model.getScore());
         playerNameTextInput.clear();
         playerNameTextInput.setDisable(true);
         startButton.setDisable(true);
+
+        model.maximizeScore();
     }
     public void resetGameWithSamePlayer(){
-        model.resetScore();
-        model.nieuwSpeelbord();
+        model.clearBoard();
         update();
+        model.resetScore();
+        onClickedStartaction(null);
+
     }
 
-    public void updateScore(){
-        showPlayerNameLabel.setText(playerName +": "+ model.getScore());
+    public void updateScore()
+    {
+        showPlayerNameLabel.setText(model.getSpeler() +": "+ model.getScore());
     }
     public void onQuitButton(ActionEvent actionEvent) {
         MultithreadingClient.stopCandyThreads();

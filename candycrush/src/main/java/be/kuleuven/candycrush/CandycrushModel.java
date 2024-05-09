@@ -15,12 +15,13 @@ public class CandycrushModel {
               0, 1, 1, 1
               ]
          */
-    private static Board<Candy> board, originalBoard;
+    private static Board<Candy> board;
     private List<Position> bestMovesList = new ArrayList<>();
     private String speler;
-    private int score, bestScore, iterCounter;
+    private int score, bestScore;
     private BoardSize boardsize;
     private Position position;
+    Board<Candy> originalBoard;
     private CandycrushController candycrushController;
     Function<Position, Candy> cellCreator = position -> {
         // Create a new cell object using the provided position
@@ -34,7 +35,10 @@ public class CandycrushModel {
         this.score = score;
         this.boardsize = boardsize;
         board = new Board<>(this.boardsize);
-
+        originalBoard = new Board<>(this.boardsize);
+    }
+    public void clearBoard(){
+        board.emptyBoard();
     }
     public void setPosition(int rowOfIndex, int columnOfIndex) {
         this.position = new Position(rowOfIndex,columnOfIndex,boardsize);
@@ -45,15 +49,11 @@ public class CandycrushModel {
     public BoardSize getBoardsize() {
         return boardsize;
     }
-    public void nieuwSpeelbord(){
-        board.fill(cellCreator);
-        updateBoard();
-    }
     public String getSpeler() {
         return speler;
     }
     public int getScore(){
-        return bestScore;
+        return score;
     }
     public void resetScore(){
         score = 0;
@@ -105,7 +105,7 @@ public class CandycrushModel {
     public Set<List<Position>> findAllMatches(){
         //concatenate the longest horizontal match and longest vertical match
         // Collect horizontal longest matches into a Set<List<Position>>
-        System.out.print("FIND ALL MATCHES\n\r");
+        //System.out.print("FIND ALL MATCHES\n\r");
         Set<List<Position>> positionSetList = new HashSet<>();
 
         positionSetList.addAll(
@@ -122,9 +122,9 @@ public class CandycrushModel {
                         .filter(element -> element.size() >= 3)
                         .collect(Collectors.toSet())
         );
-        positionSetList.stream()
-                .flatMap(List::stream)
-                .forEach(System.out::println);
+//        positionSetList.stream()
+//                .flatMap(List::stream)
+//                .forEach(System.out::println);
         return positionSetList;
     }
     private boolean firstTwoHaveCandy(Candy candy, Stream<Position> streamPositions){
@@ -194,7 +194,7 @@ public class CandycrushModel {
     private boolean checkBoardIfNoMatches(){
         // Check the board swap the candies and check for a comination
         // If there is none return true
-        System.out.print("Begin: testen of board matches heeft---------------------------------\n\n");
+        //System.out.print("Begin: testen of board matches heeft---------------------------------\n\n");
         List<Position> matchHoriz, matchVert;
         for (int i = 0; i < boardsize.rows()-1; i++)
         {
@@ -219,13 +219,13 @@ public class CandycrushModel {
                 swapOnePosition(currentPosition, positionBelow);
 
                 if (!matchHoriz.isEmpty() || !matchVert.isEmpty()){
-                    System.out.print("Einde: board heeft matches---------------------------------\n\n");
+                    //System.out.print("Einde: board heeft matches---------------------------------\n\n");
                     return false;
                 }
 
             }
         }
-        System.out.print("Einde: board heeft geen matches---------------------------------\n\n");
+        //System.out.print("Einde: board heeft geen matches---------------------------------\n\n");
         return true;
     }
     // This function will check every swappable move in the board and provide the maximum amount of points you can get
@@ -235,13 +235,14 @@ public class CandycrushModel {
             if (bestScore < score) {
                 bestScore = score;
                 System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n" +
-                        "");
+                                "Volgende wissels werden gemaakt om tot de maximale score te geraken (aantal:"+bestMovesList.size()/2+")\n");
+                System.out.println(bestMovesList);
             }
             return;
         }
 
         // Door de clearmatches in het begin kan de speler al een score hebben
-        System.out.print("New iteration started: "+(++iterCounter)+"\n");
+        //System.out.print("New iteration started: "+(++iterCounter)+"\n");
         for (int i = 0;i < boardsize.rows()-1; i++){
             for (int j = 0; j < boardsize.columns(); j++)
             {
@@ -263,7 +264,9 @@ public class CandycrushModel {
                 if (matchAfterSwitch())
                 {
                     bestMoves.add(currentPosition);bestMoves.add(positionToTheRight);
+                    bestMovesList.addAll(bestMoves);
                     findBestMove();
+                    bestMovesList.removeAll(bestMoves);
                     bestMoves.remove(currentPosition);bestMoves.remove(positionToTheRight);
                     score = tempScore;
                     tempBoard.copyTo(board);
@@ -272,7 +275,6 @@ public class CandycrushModel {
 
                 // Unswap
 
-
                 board.copyTo(tempBoard);
                 // New swap
                 swapOnePosition(currentPosition, positionBelow);
@@ -280,8 +282,11 @@ public class CandycrushModel {
                 if (matchAfterSwitch())
                 {
                     bestMoves.add(currentPosition);bestMoves.add(positionBelow);
+                    bestMovesList.addAll(bestMoves);
                     findBestMove();
+                    bestMovesList.removeAll(bestMoves);
                     bestMoves.remove(currentPosition);bestMoves.remove(positionBelow);
+
                     score = tempScore;
                     tempBoard.copyTo(board);
                 }
@@ -290,24 +295,21 @@ public class CandycrushModel {
             }
         }
     }
-
-    public void candyWithIndexSelected2(Position posIndex, Position posIndex2) {
+    public void maximizeScore(){
         // Solve the board for the maximum amount of points
-        updateBoard();
-        bestScore = score;
         // Find best move with given board
+        board.copyTo(originalBoard);
         findBestMove();
-        // System.out.print("Beste score mogelijk in dit spel: "+bestScore);
-        // If one of the two candies are zero then just return
-//        if(board.getCellAt(posIndex) == null || board.getCellAt(posIndex2) == null) return;
-//        if(!swapOnePosition(posIndex, posIndex2)) return;
-//        // Copy the board (maybe swap doesn't lead to any combo's)
-//        Board<Candy> originalBoard = board;
-//        // Perform the swap on the board because you don't know if it's doable
-//        Candy temp = board.getCellAt(posIndex);
-//        board.replaceCellAt(posIndex, board.getCellAt(posIndex2));
-//        board.replaceCellAt(posIndex2, temp);
-//        updateBoard();
+        resetScore();
+        originalBoard.copyTo(board);
+    }
+    public void candyWithIndexSelected2(Position posIndex, Position posIndex2) {
+
+        //If one of the two candies are zero then just return
+        if(!swapOnePosition(posIndex, posIndex2)) return;
+        // Perform the swap on the board because you don't know if it's doable
+        if(!matchAfterSwitch()) swapOnePosition(posIndex, posIndex2);
+        candycrushController.update();
     }
 
     public void clearMatch(List<Position> match){
@@ -333,7 +335,8 @@ public class CandycrushModel {
         match.sort(Comparator.comparingInt(Position::rowOfIndex));
         match.reversed();
         // It's already a guarantee that a match is minimum 3 long
-        if(!match.isEmpty()){
+        if(!match.isEmpty())
+        {
             score+=match.size();
             //System.out.print("Huidige score: "+ score+"\n");
             clearMatch(match);
@@ -341,7 +344,7 @@ public class CandycrushModel {
                 fallDownTo(pos);
             }
             // If there were matches call the function again to see if there are more
-            candycrushController.update();
+            //candycrushController.update();
             updateBoard();
             return true;
         }
@@ -358,7 +361,7 @@ public class CandycrushModel {
     4. (updateBoard 3.) Clear matches: Clear all matched candies and make them fall down.
     4. a (Inside step 4) Check for new matches: Call updateBoard() again to see if new matches are formed due to candies falling down.
     5. If there are no new matches, backtrack by undoing the previous swap and try the next possible swap.
-    Repeat steps 1-5: Repeat steps 1 to 5 until you find the best move. (remember the one with the ebst score)
+    Repeat steps 1-5: Repeat steps 1 to 5 until you find the best move. (remember the one with the best score)
      */
 }
 

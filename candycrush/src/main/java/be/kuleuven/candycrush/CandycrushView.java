@@ -90,8 +90,8 @@ public class CandycrushView extends Region {
         int row = (int) me.getY()/heigthCandy;
         int column = (int) me.getX()/widthCandy;
         model.setPosition(row, column);
-        System.out.println(me.getX()+" - "+me.getY()+" - "+row+" - "+column);
-        System.out.println(model.getPosition().toIndex());
+        //System.out.println(me.getX()+" - "+me.getY()+" - "+row+" - "+column);
+        //System.out.println(model.getPosition().toIndex());
         return model.getPosition();
     }
 }

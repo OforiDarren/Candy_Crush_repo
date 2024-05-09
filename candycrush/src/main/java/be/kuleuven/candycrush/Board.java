@@ -1,5 +1,7 @@
 package be.kuleuven.candycrush;
 
+import be.kuleuven.candycrush.Candy.Candy;
+
 import java.util.*;
 import java.util.function.Function;
 
@@ -62,5 +64,8 @@ public class Board<T> {
     // Methode om alle posities van een element (cel) op te halen
     public synchronized List<Position> getPositionsOfElement(T element) {
         return reverseMap.getOrDefault(element, Collections.emptyList());
+    }
+    public void emptyBoard(){
+        map.clear();
     }
 }
