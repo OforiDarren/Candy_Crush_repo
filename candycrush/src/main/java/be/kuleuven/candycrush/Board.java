@@ -1,7 +1,5 @@
 package be.kuleuven.candycrush;
 
-import be.kuleuven.candycrush.Candy.Candy;
-
 import java.util.*;
 import java.util.function.Function;
 
@@ -23,22 +21,22 @@ public class Board<T> {
     }
     public synchronized void replaceCellAt(Position position, T newCell) {
         T oldCellContent = map.get(position);
-        //if(newCell != null) {
-            map.put(position, newCell);
-            List<Position> positions = reverseMap.get(oldCellContent);
-            if (positions != null) {
-                positions.remove(position);
-                if (positions.isEmpty()) {
-                    reverseMap.remove(oldCellContent);
-                }
+        map.put(position, newCell);
+        List<Position> positions = reverseMap.get(oldCellContent);
+        if (positions != null) {
+            positions.remove(position);
+            if (positions.isEmpty()) {
+                reverseMap.remove(oldCellContent);
             }
-            reverseMap.computeIfAbsent(newCell, k -> new ArrayList<>()).add(position);
-        //}
+        }
+        reverseMap.computeIfAbsent(newCell, k -> new ArrayList<>()).add(position);
     }
     public synchronized void fill(Function<Position, T> cellCreator){//om het hele bord te vullen. De fill-functie heeft als parameter een Function-object (cellCreator) die, gegeven een Positie-object, een nieuw cel-object teruggeeft.
         map.clear();
         reverseMap.clear();
+        // Clear the map first
         for (int i = 0; i < this.boardsize.columns()*this.boardsize.rows(); i++){
+            // For every position put a random candy using cellCreator
             Position positionIndex = Position.fromIndex(i,this.boardsize);
             T cellContent = cellCreator.apply(positionIndex);
             map.put(positionIndex, cellContent);

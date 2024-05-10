@@ -104,14 +104,15 @@ public class CandycrushController {
         if (playerNameTextInput.getText().isEmpty()){
             playerNameTextInput.setText("No name");
         }
-        playerName = playerNameTextInput.getText();
         // Model 1
         /*
         CandycrushModel model = createBoardFromString("""
         @@o#
         o*#o
         @@**
-        *#@@""");*/
+        *#@@""");
+        */
+
         // Model 2
         /*
         model = createBoardFromString("""
@@ -123,6 +124,7 @@ public class CandycrushController {
         */
 
 //        // Model 3
+
         model = createBoardFromString("""
         #@#oo@
         @**@**
