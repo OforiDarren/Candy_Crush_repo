@@ -201,12 +201,12 @@ public class CandycrushModel {
         // If there is none return true
         //System.out.print("Begin: testen of board matches heeft---------------------------------\n\n");
         List<Position> matchHoriz, matchVert;
-        for (int i = 0; i < boardsize.rows()-1; i++)
+        for (int i = 0; i < boardsize.rows(); i++)
         {
             for (int j = 0; j < boardsize.columns(); j++)
             {
                 Position currentPosition = new Position(i,j,boardsize);
-                Position positionBelow = new Position(i+1   ,j      , boardsize);
+                Position positionBelow;
                 Position positionToTheRight;
                 if(currentPosition.isLastColumn()){
                     positionToTheRight  = currentPosition;
@@ -214,6 +214,9 @@ public class CandycrushModel {
                 else{
                     positionToTheRight  = new Position(i    ,1+j    , boardsize);
                 }
+                if(currentPosition.isLastRow()) positionBelow = new Position(i,j,boardsize);
+                else positionBelow = new Position(i+1   ,j      , boardsize);
+
 
                 swapOnePosition(currentPosition, positionToTheRight);
                 matchHoriz = new ArrayList<>(findAllMatches().stream().flatMap(List::stream).toList());
@@ -240,7 +243,7 @@ public class CandycrushModel {
             if (bestScore < score) {
                 bestScore = score;
                 System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n" +
-                                "Volgende wissels werden gemaakt om tot de maximale score te geraken (aantal:"+bestMovesList.size()/2+")\n");
+                                "De volgende wissels werden uitgevoerd (aantal:"+bestMovesList.size()/2+")\n");
                 for(int i = 0; i <bestMovesList.size(); i++){
                     if(i % 2 == 0) System.out.println();
                     System.out.println(bestMovesList.get(i));
@@ -248,20 +251,21 @@ public class CandycrushModel {
             }
             return;
         }
-
         // Door de clearmatches in het begin kan de speler al een score hebben
 
-        for (int i = 0;i < boardsize.rows()-1; i++){
+        for (int i = 0;i < boardsize.rows(); i++)
+        {
             for (int j = 0; j < boardsize.columns(); j++)
             {
                 // This function changes candies on the original board and gives them to a function which then swaps
                 // All the candies on that board to get the most points of that.
                 Position currentPosition = new Position(i,j,boardsize);
-                Position positionBelow = new Position(i+1   ,j      , boardsize);
+                Position positionBelow;
                 Position positionToTheRight;
                 if(currentPosition.isLastColumn()) positionToTheRight = new Position(i,j,boardsize);
                 else positionToTheRight = new Position(i,1+j,boardsize);
-
+                if(currentPosition.isLastRow()) positionBelow = new Position(i,j,boardsize);
+                else positionBelow = new Position(i+1   ,j      , boardsize);
                 // Best moves
 
                 // New swap
@@ -271,11 +275,9 @@ public class CandycrushModel {
                 int tempScore = score;
                 if (matchAfterSwitch())
                 {
-                    bestMovesList.add(currentPosition);
-                    bestMovesList.add(positionToTheRight);
+                    bestMovesList.add(currentPosition);bestMovesList.add(positionToTheRight);
                     findBestMove();
-                    bestMovesList.remove(currentPosition);
-                    bestMovesList.remove(positionToTheRight);
+                    bestMovesList.removeLast();bestMovesList.removeLast();
                     score = tempScore;
                     tempBoard.copyTo(board);
                 }
@@ -291,7 +293,7 @@ public class CandycrushModel {
                     //if (tempScore == 0 && score == 4) System.out.print("\nBreakpoint\n");
                     bestMovesList.add(currentPosition);bestMovesList.add(positionBelow);
                     findBestMove();
-                    bestMovesList.remove(currentPosition);bestMovesList.remove(positionBelow);
+                    bestMovesList.removeLast();bestMovesList.removeLast();
                     score = tempScore;
                     tempBoard.copyTo(board);
                 }

@@ -113,20 +113,23 @@ public class CandycrushController {
         @@**
         *#@@""");*/
         // Model 2
+        /*
         model = createBoardFromString("""
         #oo##
         #@o@@
         *##o@
         @@*@o
         **#*o""");
+        */
+
 //        // Model 3
-//        model = createBoardFromString("""
-//        #@#oo@
-//        @**@**
-//        o##@#o
-//        @#oo#@
-//        @*@**@
-//        *#@##*""");
+        model = createBoardFromString("""
+        #@#oo@
+        @**@**
+        o##@#o
+        @#oo#@
+        @*@**@
+        *#@##*""");
 
 
         // Already get rid of the possible matches that can be found

@@ -68,9 +68,10 @@ public record Position(int rowOfIndex, int colOfIndex, BoardSize boardsize) {
     public String toString() {
         return "Position: (r: " + (rowOfIndex) + ", c: " + (colOfIndex) + ")";
     }
-    boolean isLastColumn(){//is positie laatste in een rij
+    public boolean isLastColumn(){//is positie laatste in een rij
         return ((colOfIndex+1) % boardsize.columns()) == 0;
     }
+    public boolean isLastRow() {return ((rowOfIndex+1) % boardsize.rows()) == 0;}
     /*
               [
               0, 0, 1, 0,
