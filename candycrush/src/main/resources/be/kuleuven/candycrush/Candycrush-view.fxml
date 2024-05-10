@@ -11,6 +11,6 @@
         <TextField fx:id="playerNameTextInput" layoutX="120.0" layoutY="20.0" prefHeight="26.0" prefWidth="189.0" />
         <Label fx:id="showPlayerNameLabel" layoutX="31.0" layoutY="58.0" prefHeight="18.0" prefWidth="86.0" text="" />
       <Button layoutX="434.0" layoutY="20.0" mnemonicParsing="false" onAction="#onQuitButton" prefHeight="26.0" prefWidth="41.0" text="Quit" />
-      <Button layoutX="371.0" layoutY="20.0" mnemonicParsing="false" onAction="#resetGameWithSamePlayer" prefHeight="26.0" prefWidth="55.0" text="Reset" />
+      <Button fx:id="resetButton" layoutX="371.0" layoutY="20.0" mnemonicParsing="false" onAction="#resetGameWithSamePlayer" prefHeight="26.0" prefWidth="55.0" text="Reset" disable="true"/>
     </children>
 </AnchorPane>

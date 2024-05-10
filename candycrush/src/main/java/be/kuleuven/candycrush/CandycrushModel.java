@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+import java.util.concurrent.TimeUnit;
 public class CandycrushModel {
     /*
               [
@@ -17,6 +17,7 @@ public class CandycrushModel {
          */
     private static Board<Candy> board;
     private List<Position> bestMovesList = new ArrayList<>();
+    private List<Position> gameMoveList = new ArrayList<>();
     private String speler;
     private int score, bestScore;
     private BoardSize boardsize;
@@ -176,8 +177,12 @@ public class CandycrushModel {
     private boolean swapOnePosition(Position posIndex, Position posIndex2){
         // See if the positions are one apart
         // Check if the positions are one off horizontally
-        if (Math.abs(posIndex.colOfIndex() - posIndex2.colOfIndex()) == 1 && posIndex.rowOfIndex() == posIndex2.rowOfIndex()
-            || Math.abs(posIndex.rowOfIndex() - posIndex2.rowOfIndex()) == 1 && posIndex.colOfIndex() == posIndex2.colOfIndex())
+        // Check if arguments are valid position swaps
+        if ((posIndex == null || posIndex2 == null) || posIndex == posIndex2) return false;
+
+
+        if (((Math.abs(posIndex.colOfIndex() - posIndex2.colOfIndex()) == 1) && (posIndex.rowOfIndex() == posIndex2.rowOfIndex()))
+            || ((Math.abs(posIndex.rowOfIndex() - posIndex2.rowOfIndex())) == 1 && (posIndex.colOfIndex() == posIndex2.colOfIndex())))
         {   // Horizontal or vertical swap is possible
             if(board.getCellAt(posIndex) == null || board.getCellAt(posIndex2) == null){
                 return false;
@@ -236,13 +241,16 @@ public class CandycrushModel {
                 bestScore = score;
                 System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n" +
                                 "Volgende wissels werden gemaakt om tot de maximale score te geraken (aantal:"+bestMovesList.size()/2+")\n");
-                System.out.println(bestMovesList);
+                for(int i = 0; i <bestMovesList.size(); i++){
+                    if(i % 2 == 0) System.out.println();
+                    System.out.println(bestMovesList.get(i));
+                }
             }
             return;
         }
 
         // Door de clearmatches in het begin kan de speler al een score hebben
-        //System.out.print("New iteration started: "+(++iterCounter)+"\n");
+
         for (int i = 0;i < boardsize.rows()-1; i++){
             for (int j = 0; j < boardsize.columns(); j++)
             {
@@ -251,11 +259,11 @@ public class CandycrushModel {
                 Position currentPosition = new Position(i,j,boardsize);
                 Position positionBelow = new Position(i+1   ,j      , boardsize);
                 Position positionToTheRight;
-                if(currentPosition.isLastColumn()) positionToTheRight = currentPosition;
+                if(currentPosition.isLastColumn()) positionToTheRight = new Position(i,j,boardsize);
                 else positionToTheRight = new Position(i,1+j,boardsize);
 
                 // Best moves
-                List<Position> bestMoves = new ArrayList<>();
+
                 // New swap
                 Board<Candy> tempBoard = new Board<>(boardsize);
                 swapOnePosition(currentPosition, positionToTheRight);
@@ -263,30 +271,27 @@ public class CandycrushModel {
                 int tempScore = score;
                 if (matchAfterSwitch())
                 {
-                    bestMoves.add(currentPosition);bestMoves.add(positionToTheRight);
-                    bestMovesList.addAll(bestMoves);
+                    bestMovesList.add(currentPosition);
+                    bestMovesList.add(positionToTheRight);
                     findBestMove();
-                    bestMovesList.removeAll(bestMoves);
-                    bestMoves.remove(currentPosition);bestMoves.remove(positionToTheRight);
+                    bestMovesList.remove(currentPosition);
+                    bestMovesList.remove(positionToTheRight);
                     score = tempScore;
                     tempBoard.copyTo(board);
                 }
                 swapOnePosition(currentPosition, positionToTheRight);
 
-                // Unswap
 
-                board.copyTo(tempBoard);
                 // New swap
                 swapOnePosition(currentPosition, positionBelow);
+                board.copyTo(tempBoard);
                 tempScore = score;
                 if (matchAfterSwitch())
                 {
-                    bestMoves.add(currentPosition);bestMoves.add(positionBelow);
-                    bestMovesList.addAll(bestMoves);
+                    //if (tempScore == 0 && score == 4) System.out.print("\nBreakpoint\n");
+                    bestMovesList.add(currentPosition);bestMovesList.add(positionBelow);
                     findBestMove();
-                    bestMovesList.removeAll(bestMoves);
-                    bestMoves.remove(currentPosition);bestMoves.remove(positionBelow);
-
+                    bestMovesList.remove(currentPosition);bestMovesList.remove(positionBelow);
                     score = tempScore;
                     tempBoard.copyTo(board);
                 }
@@ -308,7 +313,17 @@ public class CandycrushModel {
         //If one of the two candies are zero then just return
         if(!swapOnePosition(posIndex, posIndex2)) return;
         // Perform the swap on the board because you don't know if it's doable
+        try{
+            TimeUnit.SECONDS.sleep(1);
+        }
+        catch(InterruptedException ignored){
+
+        }
         if(!matchAfterSwitch()) swapOnePosition(posIndex, posIndex2);
+        else{
+            gameMoveList.add(posIndex);gameMoveList.add(posIndex2);
+            //System.out.println(gameMoveList+"\n");
+        }
         candycrushController.update();
     }
 
@@ -323,7 +338,8 @@ public class CandycrushModel {
         int i = position.rowOfIndex();
         Position oneRowAbove = new Position(--i, position.colOfIndex(),boardsize);
 
-        if(board.getCellAt(position) == null){
+        if(board.getCellAt(position) == null)
+        {
             board.replaceCellAt(position, board.getCellAt(oneRowAbove));
             board.replaceCellAt(oneRowAbove, null);
         }

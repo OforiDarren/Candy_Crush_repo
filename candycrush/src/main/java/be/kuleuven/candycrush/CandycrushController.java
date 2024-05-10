@@ -28,6 +28,7 @@ public class CandycrushController {
     private int clickCount = 0;
     @FXML
     private Button startButton;
+    @FXML
     private Button resetButton;
 
     @FXML
@@ -47,10 +48,11 @@ public class CandycrushController {
     @FXML
     void initialize() {
         assert Label != null : "fx:id=\"Label\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
-        assert startButton != null : "fx:id=\"btn\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
+        assert startButton != null : "fx:id=\"startbtn\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert paneel != null : "fx:id=\"paneel\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert speelbord != null : "fx:id=\"speelbord\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
         assert playerNameTextInput != null : "fx:id=\"playerNameTextinput\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
+        assert resetButton != null : "fx:id=\"rstbtn\" was not injected: check your FXML file 'Candycrush-view.fxml'.";
     }
     public void update(){
         view.update();
@@ -86,6 +88,7 @@ public class CandycrushController {
     }
     private static Candy characterToCandy(char c) {
         return switch(c) {
+            case '.' -> null;
             case 'o' -> new Candy.NormalCandy(0);
             case '*' -> new Candy.NormalCandy(1);
             case '#' -> new Candy.NormalCandy(2);
@@ -102,11 +105,30 @@ public class CandycrushController {
             playerNameTextInput.setText("No name");
         }
         playerName = playerNameTextInput.getText();
-        model = createBoardFromString("""
+        // Model 1
+        /*
+        CandycrushModel model = createBoardFromString("""
         @@o#
         o*#o
         @@**
-        *#@@""");
+        *#@@""");*/
+        // Model 2
+        model = createBoardFromString("""
+        #oo##
+        #@o@@
+        *##o@
+        @@*@o
+        **#*o""");
+//        // Model 3
+//        model = createBoardFromString("""
+//        #@#oo@
+//        @**@**
+//        o##@#o
+//        @#oo#@
+//        @*@**@
+//        *#@##*""");
+
+
         // Already get rid of the possible matches that can be found
         view = new CandycrushView(model);
         // Give model the view, controller after recursive updates
@@ -117,7 +139,7 @@ public class CandycrushController {
         playerNameTextInput.clear();
         playerNameTextInput.setDisable(true);
         startButton.setDisable(true);
-
+        resetButton.setDisable(false);
         model.maximizeScore();
     }
     public void resetGameWithSamePlayer(){
@@ -125,7 +147,6 @@ public class CandycrushController {
         update();
         model.resetScore();
         onClickedStartaction(null);
-
     }
 
     public void updateScore()
