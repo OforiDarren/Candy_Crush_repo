@@ -105,23 +105,23 @@ public class CandycrushController {
             playerNameTextInput.setText("No name");
         }
         // Model 1
-        /*
-        CandycrushModel model = createBoardFromString("""
+/*
+        model = createBoardFromString("""
         @@o#
         o*#o
         @@**
         *#@@""");
-        */
 
+*/
         // Model 2
-        /*
+/*
         model = createBoardFromString("""
         #oo##
         #@o@@
         *##o@
         @@*@o
         **#*o""");
-        */
+*/
 
 //        // Model 3
 

@@ -225,7 +225,7 @@ public class CandycrushModel {
                 bestScore = score;
                 System.out.print("Beste score mogelijk in dit spel tot nu toe: "+bestScore+"\n" +
                                 "De volgende wissels werden uitgevoerd (aantal:"+bestMovesList.size()/2+")\n");
-                for(int i = 0; i <bestMovesList.size(); i++){
+                for(int i = 0; i < bestMovesList.size(); i++){
                     // Format for tidiness
                     if(i % 2 == 0) System.out.println();
                     System.out.println(bestMovesList.get(i));
@@ -273,7 +273,6 @@ public class CandycrushModel {
                 tempScore = score;
                 if (matchAfterSwitch())
                 {
-                    //if (tempScore == 0 && score == 4) System.out.print("\nBreakpoint\n");
                     bestMovesList.add(currentPosition);bestMovesList.add(positionBelow);
                     findBestMove();
                     bestMovesList.removeLast();bestMovesList.removeLast();
